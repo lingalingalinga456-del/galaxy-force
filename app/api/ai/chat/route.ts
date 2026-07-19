@@ -3,9 +3,10 @@ import { createClient } from '@/lib/supabase/server';
 
 const MAX_TOKENS = 1200;
 const RATE_LIMIT_WINDOW = 60;
-const RATE_LIMIT_MAX = 20;
+const RATE_LIMIT_MAX_AUTH = 20;
+const RATE_LIMIT_MAX_GUEST = 8;
 
-const SYSTEM_PROMPT = `You are "Galaxy Assistant", an AI helper for Galaxy Workforce, an AI-powered freelance / human-workforce marketplace (focused on Bangladesh, supports English and Bengali).
+const FULL_SYSTEM_PROMPT = `You are "Galaxy Assistant", an AI helper for Galaxy Workforce, an AI-powered freelance / human-workforce marketplace (focused on Bangladesh, supports English and Bengali).
 
 Your job is to help users (clients who hire, and talents/freelancers who work) use the website more easily. You do two things well:
 1. Simplify what the user needs in plain language.
@@ -26,24 +27,39 @@ Rules:
 - Be friendly and encouraging. If unsure, point them to the relevant page from the site map.
 - Use simple markdown (short paragraphs, bullet lists). Do not use headings larger than needed.`;
 
-async function checkRateLimit(userId: string): Promise<boolean> {
+const GUEST_SYSTEM_PROMPT = `You are "Galaxy Assistant", the public AI helper for Galaxy Workforce, an AI-powered freelance / human-workforce marketplace (focused on Bangladesh, supports English and Bengali).
+
+The person chatting with you is NOT logged in (a visitor / public user). You have LIMITED scope:
+- You may ONLY answer general questions about Galaxy Workforce: what the platform is, how it works, who it is for (clients vs talents), pricing, FAQs, safety, and how to get started.
+- You may explain the public pages they can browse: Home "/", Discover people "/discover", Browse jobs "/jobs", Pricing "/pricing", FAQ, and how to sign up at "/register" or log in at "/login".
+- You must NOT give account-specific, step-by-step "how to post a job / send a proposal / manage contracts" walkthroughs that require being logged in.
+- If the user asks to do something that needs an account (post a job, hire, apply, manage payments, draft a proposal, etc.), politely explain that this requires signing in, and guide them to "/register" or "/login". Keep it brief and welcoming.
+
+Rules:
+- Reply in the same language the user writes (English or Bengali).
+- Be friendly, concise, and encouraging. Use simple markdown (short paragraphs, bullet lists).
+- Never ask for passwords, OTPs, PINs, or payment credentials.`;
+
+async function checkRateLimit(userId: string, window: number, max: number): Promise<boolean> {
   const supabase = await createClient();
   const { count, error } = await supabase
     .from('ai_logs')
     .select('id', { count: 'exact', head: true })
     .eq('user_id', userId)
-    .gte('created_at', new Date(Date.now() - RATE_LIMIT_WINDOW * 1000).toISOString());
+    .gte('created_at', new Date(Date.now() - window * 1000).toISOString());
   if (error) return true;
-  return (count || 0) < RATE_LIMIT_MAX;
+  return (count || 0) < max;
+}
+
+function clientIp(request: NextRequest): string {
+  const fwd = request.headers.get('x-forwarded-for');
+  return fwd?.split(',')[0]?.trim() || request.headers.get('x-real-ip') || 'unknown';
 }
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  const authed = !!user;
 
   let body: any;
   try {
@@ -59,19 +75,25 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'No messages provided' }, { status: 400 });
   }
 
-  if (!(await checkRateLimit(user.id))) {
-    return NextResponse.json({ error: 'Rate limit exceeded. Please try again shortly.' }, { status: 429 });
+  // Rate limit: per-user when authed, per-IP when guest
+  const limiter = authed ? user!.id : `guest:${clientIp(request)}`;
+  if (!(await checkRateLimit(limiter, RATE_LIMIT_WINDOW, authed ? RATE_LIMIT_MAX_AUTH : RATE_LIMIT_MAX_GUEST))) {
+    return NextResponse.json(
+      { error: language === 'bn' ? 'বেশি অনুরোধ। অনুগ্রহ করে কিছুক্ষণ পর আবার চেষ্টা করুন।' : 'Rate limit exceeded. Please try again shortly.' },
+      { status: 429 }
+    );
   }
 
   const apiKey = process.env.OPENROUTER_API_KEY;
   let content = '';
   let status: 'success' | 'fallback' = 'success';
+  const systemPrompt = authed ? FULL_SYSTEM_PROMPT : GUEST_SYSTEM_PROMPT;
 
   if (!apiKey) {
     status = 'fallback';
     content = language === 'bn'
-      ? 'দুঃখিত, এই মুহূর্তে AI সেবা উপলব্ধ নয়। আপনি ম্যানুয়ালি বাম পাশের মেনু থেকে যেকোনো অপশন বেছে নিতে পারেন।'
-      : 'Sorry, the AI service is not available right now. You can still use the site manually from the menu on the left.';
+      ? 'দুঃখিত, এই মুহূর্তে AI সেবা উপলব্ধ নয়। আপনি ম্যানুয়ালি মেনু থেকে যেকোনো অপশন বেছে নিতে পারেন।'
+      : 'Sorry, the AI service is not available right now. You can still browse the site from the menu.';
   } else {
     try {
       const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
@@ -84,7 +106,7 @@ export async function POST(request: NextRequest) {
         },
         body: JSON.stringify({
           model: process.env.OPENROUTER_MODEL || 'anthropic/claude-3.5-sonnet',
-          messages: [{ role: 'system', content: SYSTEM_PROMPT }, ...messages],
+          messages: [{ role: 'system', content: systemPrompt }, ...messages],
           max_tokens: MAX_TOKENS,
           temperature: 0.6,
         }),
@@ -96,21 +118,24 @@ export async function POST(request: NextRequest) {
     } catch {
       status = 'fallback';
       content = language === 'bn'
-        ? 'AI-এর সাড়া দিতে সমস্যা হচ্ছে। দয়া করে কিছুক্ষণ পর আবার চেষ্টা করুন, অথবা মেনু থেকে ম্যানুয়ালি কাজ করুন।'
-        : 'I had trouble responding. Please try again in a moment, or use the menu manually.';
+        ? 'AI-এর সাড়া দিতে সমস্যা হচ্ছে। দয়া করে কিছুক্ষণ পর আবার চেষ্টা করুন।'
+        : 'I had trouble responding. Please try again in a moment.';
     }
   }
 
-  await supabase.from('ai_logs').insert({
-    user_id: user.id,
-    feature: 'chat',
-    status,
-    prompt_summary: `chat: ${JSON.stringify(messages[messages.length - 1]?.content || '').slice(0, 200)}`,
-    tokens_estimate: content.length,
-    cost_estimate: 0,
-  });
+  // Only persist logs for authenticated users (guest rows would have no valid user_id FK)
+  if (authed) {
+    await supabase.from('ai_logs').insert({
+      user_id: user!.id,
+      feature: 'chat',
+      status,
+      prompt_summary: `chat(guest=${!authed}): ${JSON.stringify(messages[messages.length - 1]?.content || '').slice(0, 200)}`,
+      tokens_estimate: content.length,
+      cost_estimate: 0,
+    });
+  }
 
-  return NextResponse.json({ success: true, content, mode: status, language });
+  return NextResponse.json({ success: true, content, mode: status, language, authed });
 }
 
 export const config = {

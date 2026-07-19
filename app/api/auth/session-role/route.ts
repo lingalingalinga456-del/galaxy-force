@@ -5,5 +5,5 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
   const role = await getUserRole();
-  return NextResponse.json({ role: role ?? null });
+  return NextResponse.json({ role: role ?? null, authed: !!role });
 }

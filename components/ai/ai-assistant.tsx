@@ -74,6 +74,7 @@ const SUGGESTED_PROMPTS: Record<Role, string[]> = {
 export function AIAssistant() {
   const [open, setOpen] = useState(false);
   const [role, setRole] = useState<Role>('guest');
+  const [authed, setAuthed] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -87,6 +88,7 @@ export function AIAssistant() {
         const res = await fetch('/api/auth/session-role');
         if (res.ok) {
           const data = await res.json();
+          setAuthed(!!data.authed);
           if (data.role) setRole(data.role as Role);
         }
       } catch {
@@ -122,6 +124,14 @@ export function AIAssistant() {
   async function runQuick(actionIndex: number) {
     const action = QUICK_ACTIONS[role][actionIndex];
     if (!action) return;
+    // Guests can only use FAQ-style actions; block account-specific content generation
+    if (!authed && (action.en.startsWith('Draft') || action.en.startsWith('Improve'))) {
+      const note = locale === 'bn'
+        ? 'এই বৈশিষ্ট্যটি ব্যবহার করতে দয়া করে লগ ইন করুন। আমি সাধারণ প্রশ্নের উত্তর দিতে পারি — নিচে কিছু বিকল্প দেখুন।'
+        : 'Please sign in to use this feature. I can answer general questions right now — try one of the FAQ options below.';
+      setMessages([...messages, { role: 'user', content: action.en }, { role: 'assistant', content: note }]);
+      return;
+    }
     if (action.en.startsWith('Draft') || action.en.startsWith('Improve')) {
       // Use the feature endpoint for content generation
       setLoading(true);
@@ -197,9 +207,25 @@ export function AIAssistant() {
           <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto bg-warm-cream p-4">
             {messages.length === 0 && (
               <div className="rounded-xl bg-white p-4 text-sm text-warm-muted shadow-card">
-                <p className="mb-2 font-medium text-warm-ink">{t('ai.hi', { en: 'Hi! I can help you use Galaxy Workforce.', bn: 'হাই! আমি গ্যালাক্সি ওয়ার্কফোর্স ব্যবহারে সাহায্য করতে পারি।' })}</p>
-                <p>{t('ai.opt', { en: 'Ask me anything, or tap a quick action below. You can also use the site fully on your own.', bn: 'যেকোনো কিছু জিজ্ঞাসা করুন, অথবা নিচের দ্রুত অপশনে ট্যাপ করুন। আপনি চাইলে ম্যানুয়ালিও সাইট ব্যবহার করতে পারেন।' })}</p>
+                <p className="mb-2 font-medium text-warm-ink">
+                  {authed
+                    ? t('ai.hi', { en: 'Hi! I can help you use Galaxy Workforce.', bn: 'হাই! আমি গ্যালাক্সি ওয়ার্কফোর্স ব্যবহারে সাহায্য করতে পারি।' })
+                    : t('ai.hiGuest', { en: 'Hi! I am the public assistant. Ask me about Galaxy Workforce, or sign in for personalized help.', bn: 'হাই! আমি পাবলিক সহকারী। গ্যালাক্সি ওয়ার্কফোর্স সম্পর্কে জিজ্ঞাসা করুন, বা ব্যক্তিগত সাহায্যের জন্য লগ ইন করুন।' })}
+                </p>
+                <p>
+                  {authed
+                    ? t('ai.opt', { en: 'Ask me anything, or tap a quick action below. You can also use the site fully on your own.', bn: 'যেকোনো কিছু জিজ্ঞাসা করুন, অথবা নিচের দ্রুত অপশনে ট্যাপ করুন। আপনি চাইলে ম্যানুয়ালিও সাইট ব্যবহার করতে পারেন।' })
+                    : t('ai.optGuest', { en: 'I can answer general FAQs. Sign in to post jobs, hire talent, or get step-by-step help.', bn: 'আমি সাধারণ প্রশ্নের উত্তর দিতে পারি। জব পোস্ট, ট্যালেন্ট নিয়োগ বা ধাপে ধাপে সাহায্যের জন্য লগ ইন করুন।' })}
+                </p>
               </div>
+            )}
+            {!authed && messages.length === 0 && (
+              <a
+                href="/register"
+                className="block rounded-xl border border-warm-gold/40 bg-warm-gold/10 p-3 text-center text-sm font-medium text-warm-ink hover:bg-warm-gold/20"
+              >
+                {t('ai.signin', { en: 'Sign in to unlock full AI help →', bn: 'পূর্ণ AI সাহায্যের জন্য লগ ইন করুন →' })}
+              </a>
             )}
             {messages.map((m, i) => (
               <div key={i} className={cn('flex', m.role === 'user' ? 'justify-end' : 'justify-start')}>
