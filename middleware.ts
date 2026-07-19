@@ -30,7 +30,8 @@ export async function middleware(request: NextRequest) {
   // Redirect unauthenticated users away from app routes
   const isAppRoute = pathname.startsWith('/(client') || pathname.startsWith('/client') ||
                      pathname.startsWith('/(talent') || pathname.startsWith('/talent-dashboard') ||
-                     pathname.startsWith('/(admin') || pathname.startsWith('/admin');
+                     pathname.startsWith('/(admin') || pathname.startsWith('/admin') ||
+                     pathname.startsWith('/(shop-owner') || pathname.startsWith('/shop-owner');
 
   if (isAppRoute && !user) {
     const redirectUrl = new URL('/login', request.url);
@@ -62,6 +63,9 @@ export async function middleware(request: NextRequest) {
     if (pathname.startsWith('/admin') && role !== 'admin') {
       return NextResponse.redirect(new URL(getDashboardPath(role), request.url));
     }
+    if (pathname.startsWith('/shop-owner') && role !== 'shop_owner') {
+      return NextResponse.redirect(new URL(getDashboardPath(role), request.url));
+    }
   }
 
   return response;
@@ -72,6 +76,7 @@ function getDashboardPath(role?: string | null): string {
     case 'client': return '/client';
     case 'talent': return '/talent-dashboard';
     case 'admin': return '/admin';
+    case 'shop_owner': return '/shop-owner';
     default: return '/';
   }
 }

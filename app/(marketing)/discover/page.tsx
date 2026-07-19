@@ -13,6 +13,7 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Pro
 
   let talentProfiles: any[] = [];
   let categories: any[] = [];
+  let products: any[] = [];
 
   try {
     const talentQuery = supabase
@@ -33,6 +34,16 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Pro
       .eq('is_active', true)
       .order('sort_order');
     categories = cats || [];
+
+    if (query) {
+      const { data: prods } = await supabase
+        .from('products')
+        .select('id, name, description, category, price, shop_profiles(shop_name)')
+        .eq('status', 'published')
+        .or(`name.ilike.%${query}%,category.ilike.%${query}%,description.ilike.%${query}%`)
+        .limit(12);
+      products = prods || [];
+    }
   } catch (e) {
     console.error('Error fetching talent:', e);
   }
@@ -152,6 +163,24 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Pro
           )}
         </div>
       </section>
+
+      {products.length > 0 && (
+        <section className="py-12 bg-warm-beige">
+          <div className="container mx-auto px-4">
+            <h2 className="text-2xl font-bold text-warm-ink mb-6">Products from Shops</h2>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {products.map((p: any) => (
+                <div key={p.id} className="p-6 rounded-xl bg-white border border-warm-border">
+                  <h3 className="font-semibold text-warm-ink">{p.name}</h3>
+                  <p className="text-sm text-warm-muted mb-2">{p.shop_profiles?.shop_name}</p>
+                  <p className="text-sm text-warm-muted line-clamp-2 mb-3">{p.description}</p>
+                  <span className="font-semibold text-warm-green">৳{Number(p.price).toLocaleString()}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       <footer className="bg-warm-ink text-white py-12">
         <div className="container mx-auto px-4 grid md:grid-cols-3 gap-8">

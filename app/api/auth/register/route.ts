@@ -58,6 +58,8 @@ export async function POST(request: Request) {
       await supabaseAdmin
         .from('client_profiles')
         .upsert({ id: uid, organization_name: organizationName, business_type: businessType, country });
+    } else if (role === 'shop_owner') {
+      // Shop profile is created during the /onboarding flow; nothing extra here.
     } else {
       const skillArr = typeof skills === 'string'
         ? skills.split(',').map((s: string) => s.trim()).filter(Boolean)

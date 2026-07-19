@@ -15,9 +15,9 @@ function RegisterInner() {
   const locale = useLocale();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const initialRole: 'client' | 'talent' =
-    searchParams.get('role') === 'talent' ? 'talent' : 'client';
-  const [role, setRole] = useState<'client' | 'talent'>(initialRole);
+  const initialRole: 'client' | 'talent' | 'shop_owner' =
+    (searchParams.get('role') as 'client' | 'talent' | 'shop_owner') || 'client';
+  const [role, setRole] = useState<'client' | 'talent' | 'shop_owner'>(initialRole);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -68,7 +68,13 @@ function RegisterInner() {
         router.push('/login');
         return;
       }
-      router.push(role === 'talent' ? '/onboarding?role=talent' : '/client');
+      router.push(
+        role === 'talent'
+          ? '/onboarding?role=talent'
+          : role === 'shop_owner'
+          ? '/onboarding?role=shop_owner'
+          : '/client'
+      );
       router.refresh();
     } catch (err: any) {
       setError(err?.message || 'Registration failed');
@@ -95,15 +101,22 @@ function RegisterInner() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-3">
             <p className="text-sm font-medium text-warm-ink">{t('whoAreYou', { en: 'Who are you?', bn: 'আপনি কে?' })}</p>
-            <div className="flex items-center gap-6">
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input type="radio" name="roletoggle" checked={role === 'client'} onChange={() => setRole('client')} className="h-4 w-4 text-warm-red" />
-                <span className="text-sm font-medium">{t('hire', { en: 'I want to hire talent', bn: 'আমি ট্যালেন্ট নিয়োগ করতে চাই' })}</span>
-              </label>
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input type="radio" name="roletoggle" checked={role === 'talent'} onChange={() => setRole('talent')} className="h-4 w-4 text-warm-red" />
-                <span className="text-sm font-medium">{t('findWork', { en: 'I want to find work', bn: 'আমি কাজ খুঁজি চাই' })}</span>
-              </label>
+            <div className="grid grid-cols-2 gap-3">
+              {([
+                { value: 'client', title: t('hire', { en: 'I want to hire talent', bn: 'আমি ট্যালেন্ট নিয়োগ করতে চাই' }), desc: t('hireDesc', { en: 'Post jobs, hire freelancers', bn: 'জব দিন, ফ্রিল্যান্সার নিয়োগ করুন' }) },
+                { value: 'talent', title: t('findWork', { en: 'I want to find work', bn: 'আমি কাজ খুঁজি চাই' }), desc: t('findWorkDesc', { en: 'Offer your skills & services', bn: 'আপনার দক্ষতা ও সেবা দিন' }) },
+                { value: 'shop_owner', title: t('sellProducts', { en: 'I want to sell products', bn: 'আমি পণ্য বিক্রি করতে চাই' }), desc: t('sellProductsDesc', { en: 'Run your shop on Galaxy', bn: 'গ্যালাক্সিতে আপনার দোকান চালান' }) },
+              ] as const).map((opt) => (
+                <button
+                  type="button"
+                  key={opt.value}
+                  onClick={() => setRole(opt.value)}
+                  className={`rounded-2xl border p-4 text-left transition-all ${role === opt.value ? 'border-warm-red bg-warm-red/5 ring-1 ring-warm-red' : 'border-warm-border bg-white hover:border-warm-red/40'}`}
+                >
+                  <span className="block text-sm font-semibold text-warm-ink">{opt.title}</span>
+                  <span className="mt-1 block text-xs text-warm-muted">{opt.desc}</span>
+                </button>
+              ))}
             </div>
           </div>
 
@@ -193,7 +206,11 @@ function RegisterInner() {
           {error && <p className="text-sm text-warm-red">{error}</p>}
 
           <Button type="submit" className="w-full" size="lg" disabled={submitting}>
-            {submitting ? t('common.loading', { en: 'Loading...', bn: 'লোড হচ্ছে...' }) : t('createAccount', { en: 'Create Account', bn: 'অ্যাকাউন্ট তৈরি করুন' })}
+            {submitting
+              ? t('common.loading', { en: 'Loading...', bn: 'লোড হচ্ছে...' })
+              : role === 'shop_owner'
+              ? t('createShopOwner', { en: 'Create Shop Owner Account', bn: 'শপ ওনার অ্যাকাউন্ট তৈরি করুন' })
+              : t('createAccount', { en: 'Create Account', bn: 'অ্যাকাউন্ট তৈরি করুন' })}
           </Button>
         </form>
 

@@ -1,4 +1,4 @@
-export type UserRole = 'client' | 'talent' | 'admin';
+export type UserRole = 'client' | 'talent' | 'admin' | 'shop_owner';
 export type UserStatus = 'active' | 'suspended' | 'pending';
 export type ProfileVisibility = 'public' | 'private';
 
@@ -330,6 +330,72 @@ export interface NewsletterSubscriber {
   created_at: string;
 }
 
+export interface ShopProfile {
+  id: string;
+  user_id: string;
+  shop_name: string;
+  business_type: string;
+  address: string | null;
+  city: string | null;
+  phone: string | null;
+  years_in_operation: number | null;
+  delivery_radius_km: number;
+  min_order_amount: number;
+  verification_status: 'pending' | 'verified' | 'rejected';
+  trust_score: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Product {
+  id: string;
+  shop_id: string;
+  name: string;
+  description: string | null;
+  category: string;
+  price: number;
+  stock_quantity: number;
+  delivery_days: number;
+  status: 'draft' | 'published' | 'paused' | 'archived';
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ProductMedia {
+  id: string;
+  product_id: string;
+  storage_path: string;
+  is_cover: boolean;
+  created_at: string;
+}
+
+export interface Order {
+  id: string;
+  shop_id: string;
+  client_id: string;
+  status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
+  total_amount: number;
+  delivery_address: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface OrderItem {
+  id: string;
+  order_id: string;
+  product_id: string;
+  quantity: number;
+  unit_price: number;
+}
+
+export interface InventoryLog {
+  id: string;
+  product_id: string;
+  change: number;
+  reason: string | null;
+  created_at: string;
+}
+
 export type Database = {
   public: {
     Tables: {
@@ -359,6 +425,12 @@ export type Database = {
       admin_audit_logs: { Row: AdminAuditLog; Insert: Omit<AdminAuditLog, 'created_at'>; Update: Partial<AdminAuditLog> };
       platform_settings: { Row: PlatformSettings; Insert: Omit<PlatformSettings, 'updated_at'>; Update: Partial<PlatformSettings> };
       newsletter_subscribers: { Row: NewsletterSubscriber; Insert: Omit<NewsletterSubscriber, 'created_at'>; Update: Partial<NewsletterSubscriber> };
+      shop_profiles: { Row: ShopProfile; Insert: Omit<ShopProfile, 'id' | 'created_at' | 'updated_at'>; Update: Partial<ShopProfile> };
+      products: { Row: Product; Insert: Omit<Product, 'id' | 'created_at' | 'updated_at'>; Update: Partial<Product> };
+      product_media: { Row: ProductMedia; Insert: Omit<ProductMedia, 'id' | 'created_at'>; Update: Partial<ProductMedia> };
+      orders: { Row: Order; Insert: Omit<Order, 'id' | 'created_at' | 'updated_at'>; Update: Partial<Order> };
+      order_items: { Row: OrderItem; Insert: Omit<OrderItem, 'id'>; Update: Partial<OrderItem> };
+      inventory_logs: { Row: InventoryLog; Insert: Omit<InventoryLog, 'id' | 'created_at'>; Update: Partial<InventoryLog> };
     };
   };
 };

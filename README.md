@@ -79,6 +79,40 @@ npm run build && npm run start   # production
 Additional seeded talent logins use `<username>@galaxyworkforce.app` with the same password
 (e.g. `nadia_khan@galaxyworkforce.app`). See `DEMO_ACCOUNTS.md` for the full list.
 
+
+## Shop Owner Portal
+
+Galaxy Workforce supports a fourth role, **shop_owner**, for users who sell physical products.
+
+### Registration
+1. On /register choose "I want to sell products" — the submit button becomes "Create Shop Owner Account".
+2. After sign-up you are routed to /onboarding?role=shop_owner, a 3-step flow:
+   - Step 1 Shop Information: shop name, business type, address, city, phone.
+   - Step 2 Business Details: years in operation, main product categories (multi-select).
+   - Step 3 Preferences: delivery radius (km), minimum order amount, language preference.
+3. On finish you land in the Shop Owner Hub (/shop-owner).
+
+### Shop Owner Hub (/shop-owner)
+Menu: Overview, My Products, Add Product, Orders, Inventory, Analytics, Inbox, Customers, Settings, Support.
+- Overview: shop name, Trust Score, verification status, product/order/revenue stats, recent orders.
+- Products: list, add (/shop-owner/products/new), edit (/shop-owner/products/[id]/edit). RLS scopes each shop to its own rows.
+- Orders: list + detail (/shop-owner/orders/[id]) with a confirm action.
+- Inventory: stock levels with low/out-of-stock indicators.
+- Analytics: Trust Score, published products, revenue, products-by-category.
+- Customers: distinct clients from orders. Settings: edit shop profile.
+
+### Data model (supabase/migrations/002_shop_owner_portal.sql)
+shop_profiles, products, product_media, orders, order_items, inventory_logs.
+The user_role enum is extended with 'shop_owner' (no column change needed). RLS: each shop manages only its own rows; published products and verified shops are publicly readable; orders are visible to the shop owner and the ordering client.
+
+### Seeded demo shops (password DemoPass123!)
+- shop1@galaxyworkforce.app (Dhaka Auto Parts)
+- shop2@galaxyworkforce.app (ElectroMart)
+- shop3@galaxyworkforce.app (Hardware Hub)
+
+Seeded data: 3 shops, 13 products (>=4 automotive/spare-parts), and 5 sample orders with items.
+Shop products also appear in the public Discover search results when relevant.
+
 ## Scripts
 
 - `npm run dev` — start dev server
