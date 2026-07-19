@@ -56,6 +56,27 @@ function clientIp(request: NextRequest): string {
   return fwd?.split(',')[0]?.trim() || request.headers.get('x-real-ip') || 'unknown';
 }
 
+function fallbackMessage(language: 'en' | 'bn', code: string): string {
+  if (code === '402') {
+    return language === 'bn'
+      ? 'AI সেবা চালু করতে OpenRouter-এ ক্রেডিট যোগ করতে হবে।'
+      : 'The AI service needs OpenRouter credits (402). Add a payment method to your OpenRouter account.';
+  }
+  if (code === '404') {
+    return language === 'bn'
+      ? 'AI মডেলটি খুঁজে পাওয়া যায়নি (৪০৪)। সঠিক মডেল সেট করুন।'
+      : 'The configured AI model was not found (404). Set a valid OPENROUTER_MODEL.';
+  }
+  if (code === '429') {
+    return language === 'bn'
+      ? 'ফ্রি AI মুহূর্তে ব্যস্ত। কিছুক্ষণ পর আবার চেষ্টা করুন।'
+      : 'The free AI is busy right now. Please try again in a moment.';
+  }
+  return language === 'bn'
+    ? 'AI-এর সাড়া দিতে সমস্যা হচ্ছে। দয়া করে আবার চেষ্টা করুন।'
+    : 'I had trouble responding. Please try again in a moment.';
+}
+
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -75,7 +96,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'No messages provided' }, { status: 400 });
   }
 
-  // Rate limit: per-user when authed, per-IP when guest
   const limiter = authed ? user!.id : `guest:${clientIp(request)}`;
   if (!(await checkRateLimit(limiter, RATE_LIMIT_WINDOW, authed ? RATE_LIMIT_MAX_AUTH : RATE_LIMIT_MAX_GUEST))) {
     return NextResponse.json(
@@ -95,35 +115,49 @@ export async function POST(request: NextRequest) {
       ? 'দুঃখিত, এই মুহূর্তে AI সেবা উপলব্ধ নয়। আপনি ম্যানুয়ালি মেনু থেকে যেকোনো অপশন বেছে নিতে পারেন।'
       : 'Sorry, the AI service is not available right now. You can still browse the site from the menu.';
   } else {
-    try {
-      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-          'HTTP-Referer': process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
-          'X-Title': 'Galaxy Workforce Assistant',
-        },
-        body: JSON.stringify({
-          model: process.env.OPENROUTER_MODEL || 'anthropic/claude-3.5-sonnet',
-          messages: [{ role: 'system', content: systemPrompt }, ...messages],
-          max_tokens: MAX_TOKENS,
-          temperature: 0.6,
-        }),
-        signal: AbortSignal.timeout(30000),
-      });
-      if (!response.ok) throw new Error(`OpenRouter ${response.status}`);
+    let lastCode = '';
+    let response: Response | null = null;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
+            'HTTP-Referer': process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
+            'X-Title': 'Galaxy Workforce Assistant',
+          },
+          body: JSON.stringify({
+            model: process.env.OPENROUTER_MODEL || 'openai/gpt-oss-20b:free',
+            messages: [{ role: 'system', content: systemPrompt }, ...messages],
+            max_tokens: MAX_TOKENS,
+            temperature: 0.6,
+          }),
+          signal: AbortSignal.timeout(30000),
+        });
+        if (response.ok) break;
+        if (response.status === 429) {
+          lastCode = '429';
+          await new Promise((r) => setTimeout(r, 1500));
+          continue;
+        }
+        lastCode = String(response.status);
+        break;
+      } catch (e: any) {
+        lastCode = /OpenRouter (\d+)/.exec(e?.message || '')?.[1] || 'net';
+        break;
+      }
+    }
+
+    if (response?.ok) {
       const data = await response.json();
       content = data.choices?.[0]?.message?.content || '';
-    } catch {
+    } else {
       status = 'fallback';
-      content = language === 'bn'
-        ? 'AI-এর সাড়া দিতে সমস্যা হচ্ছে। দয়া করে কিছুক্ষণ পর আবার চেষ্টা করুন।'
-        : 'I had trouble responding. Please try again in a moment.';
+      content = fallbackMessage(language, lastCode || 'net');
     }
   }
 
-  // Only persist logs for authenticated users (guest rows would have no valid user_id FK)
   if (authed) {
     await supabase.from('ai_logs').insert({
       user_id: user!.id,

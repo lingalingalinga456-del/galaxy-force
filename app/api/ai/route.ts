@@ -66,7 +66,7 @@ Summary:`,
       'X-Force-Tokens': '0',
     },
     body: JSON.stringify({
-      model: process.env.OPENROUTER_MODEL || 'openai/gpt-4o-mini',
+      model: process.env.OPENROUTER_MODEL || 'openai/gpt-oss-20b:free',
       messages: [
         { role: 'system', content: 'You are a helpful assistant for a freelance marketplace.' },
         { role: 'user', content: prompts[feature] || prompts.job_brief },
