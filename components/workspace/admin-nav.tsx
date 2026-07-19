@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Shield, LayoutDashboard, Users, Flag, CreditCard, Settings, ScrollText, LogOut } from 'lucide-react';
+import { Shield, LayoutDashboard, Users, Flag, CreditCard, Settings, ScrollText, LogOut, Home, Compass, Briefcase } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
@@ -15,11 +15,18 @@ const links = [
   { href: '/admin/settings', label: 'Settings', icon: Settings },
 ];
 
+const siteLinks = [
+  { href: '/', label: 'Home', icon: Home },
+  { href: '/discover', label: 'Discover', icon: Compass },
+  { href: '/jobs', label: 'Jobs', icon: Briefcase },
+  { href: '/pricing', label: 'Pricing', icon: CreditCard },
+];
+
 export function AdminNav() {
   const pathname = usePathname();
   const router = useRouter();
   return (
-    <div className="flex flex-col h-full min-h-screen bg-warm-ink text-white w-60 shrink-0">
+    <div className="flex flex-col sticky top-0 h-screen bg-warm-ink text-white w-60 shrink-0 overflow-y-auto">
       <div className="flex items-center gap-2 p-4 border-b border-white/10">
         <div className="w-8 h-8 rounded-lg bg-warm-red flex items-center justify-center">
           <Shield className="w-5 h-5 text-white" />
@@ -38,6 +45,18 @@ export function AdminNav() {
           );
         })}
       </nav>
+      <div className="px-3 pb-1">
+        <div className="text-xs uppercase tracking-wide text-white/40 px-3 pt-2 pb-1">On the site</div>
+        {siteLinks.map((l) => {
+          const Icon = l.icon;
+          return (
+            <Link key={l.href} href={l.href} className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-white/60 hover:bg-white/10 hover:text-white">
+              <Icon className="w-4 h-4" />
+              {l.label}
+            </Link>
+          );
+        })}
+      </div>
       <div className="p-3 border-t border-white/10">
         <Button variant="ghost" size="sm" className="w-full justify-start text-white/70 hover:text-white" onClick={async () => { await fetch('/api/auth/logout', { method: 'POST' }); router.push('/'); router.refresh(); }}>
           <LogOut className="w-4 h-4 mr-2" /> Sign out
@@ -46,3 +65,4 @@ export function AdminNav() {
     </div>
   );
 }
+

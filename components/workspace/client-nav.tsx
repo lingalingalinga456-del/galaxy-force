@@ -2,13 +2,14 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Sparkles, LayoutDashboard, Briefcase, FileText, MessageSquare, Wallet, BarChart3, Star, Users, Settings, LogOut } from 'lucide-react';
+import { Sparkles, LayoutDashboard, Briefcase, FileText, MessageSquare, Wallet, BarChart3, Star, Users, Settings, LogOut, Home, Compass } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
 const links = [
   { href: '/client', label: 'Overview', icon: LayoutDashboard },
   { href: '/client/jobs', label: 'My Jobs', icon: Briefcase },
+  { href: '/client/jobs/new', label: 'Post a Job', icon: FileText },
   { href: '/client/contracts', label: 'Contracts', icon: FileText },
   { href: '/client/inbox', label: 'Inbox', icon: MessageSquare },
   { href: '/client/payments', label: 'Payments', icon: Wallet },
@@ -18,12 +19,19 @@ const links = [
   { href: '/client/settings', label: 'Settings', icon: Settings },
 ];
 
+const siteLinks = [
+  { href: '/', label: 'Home', icon: Home },
+  { href: '/discover', label: 'Discover', icon: Compass },
+  { href: '/jobs', label: 'Browse Jobs', icon: Briefcase },
+  { href: '/pricing', label: 'Pricing', icon: BarChart3 },
+];
+
 export function ClientNav() {
   const pathname = usePathname();
   const router = useRouter();
 
   return (
-    <div className="flex flex-col h-full min-h-screen bg-warm-ink text-white w-60 shrink-0">
+    <div className="flex flex-col sticky top-0 h-screen bg-warm-ink text-white w-60 shrink-0 overflow-y-auto">
       <div className="flex items-center gap-2 p-4 border-b border-white/10">
         <div className="w-8 h-8 rounded-lg bg-warm-red flex items-center justify-center">
           <Sparkles className="w-5 h-5 text-white" />
@@ -49,6 +57,22 @@ export function ClientNav() {
           );
         })}
       </nav>
+      <div className="px-3 pb-1">
+        <div className="text-xs uppercase tracking-wide text-white/40 px-3 pt-2 pb-1">On the site</div>
+        {siteLinks.map((l) => {
+          const Icon = l.icon;
+          return (
+            <Link
+              key={l.href}
+              href={l.href}
+              className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-white/60 hover:bg-white/10 hover:text-white"
+            >
+              <Icon className="w-4 h-4" />
+              {l.label}
+            </Link>
+          );
+        })}
+      </div>
       <div className="p-3 border-t border-white/10">
         <Button
           variant="ghost"

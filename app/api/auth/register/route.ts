@@ -48,8 +48,7 @@ export async function POST(request: Request) {
 
     const { error: profileError } = await supabaseAdmin
       .from('profiles')
-      .update({ full_name: fullName, username, role, language })
-      .eq('id', uid);
+      .upsert({ id: uid, full_name: fullName, username, role, language, profile_visibility: 'public' });
 
     if (profileError) {
       return NextResponse.json({ error: profileError.message }, { status: 400 });

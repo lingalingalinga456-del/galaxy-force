@@ -1,31 +1,10 @@
-import { redirect } from 'next/navigation';
-import { createClient } from '@/lib/supabase/server';
-import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 import { ArrowRight, Sparkles } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
-  if (user) {
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single();
-
-    if (profile?.role === 'client') {
-      redirect('/client');
-    } else if (profile?.role === 'talent') {
-      redirect('/talent-dashboard');
-    } else if (profile?.role === 'admin') {
-      redirect('/admin');
-    }
-  }
-
   return (
     <div className="flex flex-col min-h-screen bg-warm-cream">
       {/* Header */}
