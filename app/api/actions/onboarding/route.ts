@@ -50,7 +50,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: true, redirect: '/shop-owner' });
     }
 
-    // Talent onboarding (existing behavior)
+    // Talent onboarding (workforce model)
     const headline = payload.headline as string;
     const skillsString = payload.skills as string;
     const hourlyRate = payload.hourlyRate as string;
@@ -58,6 +58,24 @@ export async function POST(request: Request) {
     const availability = (payload.availability as string) || 'available';
 
     const skills = skillsString ? skillsString.split(',').map((s) => s.trim()).filter(Boolean) : [];
+
+    const worker_meta: Record<string, any> = {
+      primaryOccupation: payload.primary_occupation || null,
+      trade: payload.trade || null,
+      experienceYears: payload.experience_years ? Number(payload.experience_years) : 0,
+      serviceRadiusKm: payload.service_radius_km ? Number(payload.service_radius_km) : 10,
+      ownVehicle: payload.own_vehicle === 'true' || payload.own_vehicle === true,
+      ownTools: payload.own_tools === 'true' || payload.own_tools === true,
+      emergencyAvailable: payload.emergency_available === 'true' || payload.emergency_available === true,
+      canTravel: payload.can_travel !== 'false',
+      maxTravelKm: payload.max_travel_km ? Number(payload.max_travel_km) : 25,
+      languages: payload.languages ? (Array.isArray(payload.languages) ? payload.languages : [payload.languages]) : ['en', 'bn'],
+      employmentTypes: payload.employment_types ? (Array.isArray(payload.employment_types) ? payload.employment_types : [payload.employment_types]) : ['one_time', 'hourly'],
+      warrantyOffered: payload.warranty_offered || 'none',
+      isBusiness: payload.is_business === 'true' || payload.is_business === true,
+      businessName: payload.business_name || null,
+      teamMember: payload.team_member === 'true' || payload.team_member === true,
+    };
 
     const { error: updateError } = await supabase
       .from('talent_profiles')
@@ -68,14 +86,30 @@ export async function POST(request: Request) {
         hourly_rate: hourlyRate ? parseFloat(hourlyRate) : null,
         country,
         availability,
+        primary_occupation: payload.primary_occupation || null,
+        trade: payload.trade || null,
+        experience_years: worker_meta.experienceYears,
+        service_radius_km: worker_meta.serviceRadiusKm,
+        own_vehicle: worker_meta.ownVehicle,
+        own_tools: worker_meta.ownTools,
+        emergency_available: worker_meta.emergencyAvailable,
+        can_travel: worker_meta.canTravel,
+        max_travel_km: worker_meta.maxTravelKm,
+        languages: worker_meta.languages,
+        employment_types: worker_meta.employmentTypes,
+        warranty_offered: worker_meta.warrantyOffered,
+        is_business: worker_meta.isBusiness,
+        business_name: worker_meta.businessName,
+        team_member: worker_meta.teamMember,
+        worker_meta,
       });
 
     if (updateError) {
       return NextResponse.json({ error: updateError.message }, { status: 400 });
     }
 
-    const completionFields = [headline, skills.length > 0, hourlyRate, country].filter(Boolean).length;
-    const completionScore = Math.round((completionFields / 5) * 100);
+    const completionFields = [headline, skills.length > 0, hourlyRate, country, payload.primary_occupation].filter(Boolean).length;
+    const completionScore = Math.round((completionFields / 6) * 100);
 
     await supabase.from('talent_profiles').update({ completion_score: completionScore }).eq('id', user.id);
 

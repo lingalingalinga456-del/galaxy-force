@@ -97,15 +97,59 @@ function OnboardingInner() {
             <input type="hidden" name="role" value="talent" />
             <div>
               <Label htmlFor="headline">{t('headline', { en: 'Professional headline', bn: 'পেশাগত হেডলাইন' })}</Label>
-              <Input id="headline" name="headline" required className="mt-1" placeholder="Web Developer | Designer | Writer" />
+              <Input id="headline" name="headline" required className="mt-1" placeholder="Electrician | Plumber | Cleaner" />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label htmlFor="primary_occupation">{t('occupation', { en: 'Primary Occupation', bn: 'প্রধান পেশা' })}</Label>
+                <Input id="primary_occupation" name="primary_occupation" className="mt-1" placeholder="Electrician" />
+              </div>
+              <div>
+                <Label htmlFor="trade">{t('trade', { en: 'Trade', bn: 'ট্রেড' })}</Label>
+                <Input id="trade" name="trade" className="mt-1" placeholder="Electrical" />
+              </div>
             </div>
             <div>
               <Label htmlFor="skills">{t('skills', { en: 'Skills (comma separated)', bn: 'দক্ষতা (কমা বিচ্ছিন্ন)' })}</Label>
-              <Input id="skills" name="skills" className="mt-1" placeholder="JavaScript, React, Node.js" />
+              <Input id="skills" name="skills" className="mt-1" placeholder="Wiring, Repair, Installation" />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label htmlFor="experience_years">{t('experienceYears', { en: 'Experience (years)', bn: 'অভিজ্ঞতা (বছর)' })}</Label>
+                <Input id="experience_years" name="experience_years" type="number" min={0} className="mt-1" placeholder="5" />
+              </div>
+              <div>
+                <Label htmlFor="hourlyRate">{t('hourlyRate', { en: 'Hourly rate (BDT)', bn: 'ঘন্টায় হার (BDT)' })}</Label>
+                <Input id="hourlyRate" name="hourlyRate" type="number" min={0} className="mt-1" placeholder="500" />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label htmlFor="service_radius_km">{t('serviceRadius', { en: 'Service radius (km)', bn: 'সেবা রেঞ্জ (কিমি)' })}</Label>
+                <Input id="service_radius_km" name="service_radius_km" type="number" min={0} className="mt-1" placeholder="10" />
+              </div>
+              <div>
+                <Label htmlFor="max_travel_km">{t('maxTravel', { en: 'Max travel (km)', bn: 'সর্বোচ্চ ভ্রমণ (কিমি)' })}</Label>
+                <Input id="max_travel_km" name="max_travel_km" type="number" min={0} className="mt-1" placeholder="25" />
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-4 text-sm">
+              <label className="flex items-center gap-2"><input type="checkbox" name="own_vehicle" value="true" /> {t('ownVehicle', { en: 'Own vehicle', bn: 'নিজস্ব যানবাহন' })}</label>
+              <label className="flex items-center gap-2"><input type="checkbox" name="own_tools" value="true" /> {t('ownTools', { en: 'Own tools', bn: 'নিজস্ব সরঞ্জাম' })}</label>
+              <label className="flex items-center gap-2"><input type="checkbox" name="emergency_available" value="true" /> {t('emergencyAvail', { en: 'Emergency available', bn: 'জরুরি সেবা' })}</label>
             </div>
             <div>
-              <Label htmlFor="hourlyRate">{t('hourlyRate', { en: 'Hourly rate (BDT)', bn: 'ঘন্টায় হার (BDT)' })}</Label>
-              <Input id="hourlyRate" name="hourlyRate" type="number" min={0} className="mt-1" placeholder="500" />
+              <Label htmlFor="employment_types">{t('employmentTypes', { en: 'Employment types (comma separated)', bn: 'কর্মসংস্থানের ধরন (কমা বিচ্ছিন্ন)' })}</Label>
+              <Input id="employment_types" name="employment_types" className="mt-1" placeholder="one_time, hourly, daily, emergency" />
+            </div>
+            <div>
+              <Label htmlFor="warranty_offered">{t('warranty', { en: 'Warranty offered', bn: 'ওয়ারেন্টি' })}</Label>
+              <select id="warranty_offered" name="warranty_offered" className="mt-1 block w-full rounded-md border-warm-border bg-white px-3 py-2 text-sm ring-1 ring-warm-border">
+                <option value="none">No warranty</option>
+                <option value="7d">7 days</option>
+                <option value="15d">15 days</option>
+                <option value="30d">30 days</option>
+              </select>
             </div>
             <div>
               <Label htmlFor="country">{t('country', { en: 'Country', bn: 'দেশ' })}</Label>

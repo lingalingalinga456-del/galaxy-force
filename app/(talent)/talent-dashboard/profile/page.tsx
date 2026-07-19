@@ -39,6 +39,48 @@ export default async function TalentProfilePage() {
             <Label htmlFor="country">Country</Label>
             <Input id="country" defaultValue={tp?.country || ''} className="mt-1" />
           </div>
+          <div>
+            <Label htmlFor="occupation">Primary Occupation</Label>
+            <Input id="occupation" defaultValue={tp?.primary_occupation || ''} className="mt-1" />
+          </div>
+          <div>
+            <Label htmlFor="trade">Trade</Label>
+            <Input id="trade" defaultValue={tp?.trade || ''} className="mt-1" />
+          </div>
+          <div>
+            <Label htmlFor="exp">Experience (years)</Label>
+            <Input id="exp" type="number" defaultValue={tp?.experience_years || ''} className="mt-1" />
+          </div>
+          <div>
+            <Label htmlFor="radius">Service radius (km)</Label>
+            <Input id="radius" type="number" defaultValue={tp?.service_radius_km || ''} className="mt-1" />
+          </div>
+          <div>
+            <Label htmlFor="warranty">Warranty offered</Label>
+            <select id="warranty" defaultValue={tp?.warranty_offered || 'none'} className="mt-1 block w-full rounded-md border-warm-border bg-white px-3 py-2 text-sm ring-1 ring-warm-border">
+              <option value="none">No warranty</option>
+              <option value="7d">7 days</option>
+              <option value="15d">15 days</option>
+              <option value="30d">30 days</option>
+            </select>
+          </div>
+          <div>
+            <Label htmlFor="status">Availability status</Label>
+            <select id="status" defaultValue={tp?.worker_status || 'available'} className="mt-1 block w-full rounded-md border-warm-border bg-white px-3 py-2 text-sm ring-1 ring-warm-border">
+              <option value="available">Available</option>
+              <option value="busy">Busy</option>
+              <option value="on_job">On Job</option>
+              <option value="offline">Offline</option>
+              <option value="vacation">Vacation</option>
+              <option value="emergency_only">Emergency Only</option>
+              <option value="appointment_only">Appointment Only</option>
+            </select>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-4 text-sm">
+          <label className="flex items-center gap-2"><input type="checkbox" name="own_vehicle" defaultChecked={tp?.own_vehicle} /> Own vehicle</label>
+          <label className="flex items-center gap-2"><input type="checkbox" name="own_tools" defaultChecked={tp?.own_tools} /> Own tools</label>
+          <label className="flex items-center gap-2"><input type="checkbox" name="emergency_available" defaultChecked={tp?.emergency_available} /> Emergency available</label>
         </div>
         <div>
           <Label htmlFor="fullName">Full name</Label>

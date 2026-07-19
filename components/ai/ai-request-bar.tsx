@@ -18,6 +18,17 @@ type TalentHit = {
 };
 type ProductHit = { id: string; name: string; price: number; shopName?: string; category?: string };
 type FallbackHit = { id: string; name: string; category: string; location: string; rating: number; contact: string };
+type CostEstimate = { labor: number | string; materials: number | string; travel: number | string; platformFee: number | string; total: number | string; confidence: string };
+type MatchResult = {
+  talent: TalentHit[];
+  products: ProductHit[];
+  fallback: FallbackHit[];
+  fallbackTriggered: boolean;
+  location: string;
+  explanation?: string | null;
+  costEstimate?: CostEstimate | null;
+  understanding?: { urgency: string; indoorOutdoor: string; workerCount: number; materialsRequired: boolean; preferredLanguage: string };
+};
 
 export function AiRequestBar() {
   const { t, locale } = useTranslation();
@@ -27,13 +38,7 @@ export function AiRequestBar() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<{
-    talent: TalentHit[];
-    products: ProductHit[];
-    fallback: FallbackHit[];
-    fallbackTriggered: boolean;
-    location: string;
-  } | null>(null);
+  const [result, setResult] = useState<MatchResult | null>(null);
 
   async function runMatch() {
     if (!query.trim()) return;
@@ -111,9 +116,29 @@ export function AiRequestBar() {
 
             <div className="flex-1 overflow-y-auto p-5 space-y-6">
               {!result && !loading && (
-                <p className="text-center text-sm text-warm-muted">
-                  {t('aiMatchHint', { en: 'e.g. "Need a plumber in Gulshan for AC repair"', bn: 'যেমন: "গুলশানে এসি মেরামতের জন্য একজন প্লাম্বার দরকার"' })}
-                </p>
+                <div className="space-y-4">
+                  <p className="text-center text-sm text-warm-muted">
+                    {t('aiMatchHint', { en: 'e.g. "I need someone to fix my refrigerator."', bn: 'যেমন: "আমার ফ্রিজ মেরামত করার জন্য কাউকে দরকার।"' })}
+                  </p>
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {[
+                      t('exFridge', { en: 'Fix my refrigerator', bn: 'ফ্রিজ মেরামত' }),
+                      t('exTruck', { en: 'Need a truck tomorrow', bn: 'কাল ট্রাক দরকার' }),
+                      t('exClean', { en: 'Office needs cleaning', bn: 'অফিস পরিষ্কার' }),
+                      t('exAc', { en: 'AC installation', bn: 'এসি ইনস্টলেশন' }),
+                      t('exSite', { en: 'I need an accountant', bn: 'একজন হিসাবরক্ষক দরকার' }),
+                      t('exWeb', { en: 'I need a website', bn: 'একটি ওয়েবসাইট দরকার' }),
+                    ].map((ex) => (
+                      <button
+                        key={ex}
+                        onClick={() => { setQuery(ex); }}
+                        className="rounded-full border border-warm-border bg-white px-3 py-1.5 text-xs text-warm-muted hover:border-warm-red hover:text-warm-red"
+                      >
+                        {ex}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               )}
               {loading && <div className="flex justify-center py-10"><Loader2 className="h-8 w-8 animate-spin text-warm-red" /></div>}
 
@@ -153,6 +178,23 @@ export function AiRequestBar() {
                         ))}
                       </div>
                     </section>
+                  )}
+
+                  {result.explanation && (
+                    <div className="rounded-card-sm border border-warm-green/30 bg-warm-green/5 p-4 text-sm text-warm-ink">
+                      <span className="font-medium text-warm-green">✓ </span>{result.explanation}
+                    </div>
+                  )}
+
+                  {result.costEstimate && Number(result.costEstimate.total) > 0 && (
+                    <div className="rounded-card-sm border border-warm-border bg-white p-4 shadow-card text-sm">
+                      <div className="mb-2 font-semibold text-warm-ink">{t('aiCostEstimate', { en: 'Estimated cost', bn: 'আনুমানিক খরচ' })}</div>
+                      <div className="flex justify-between text-warm-muted"><span>{t('aiLabor', { en: 'Labor', bn: 'শ্রম' })}</span><span>৳{result.costEstimate.labor?.toLocaleString?.() ?? result.costEstimate.labor}</span></div>
+                      <div className="flex justify-between text-warm-muted"><span>{t('aiTravel', { en: 'Travel', bn: 'ভ্রমণ' })}</span><span>৳{result.costEstimate.travel?.toLocaleString?.() ?? result.costEstimate.travel}</span></div>
+                      <div className="flex justify-between text-warm-muted"><span>{t('aiPlatformFee', { en: 'Platform fee', bn: 'প্ল্যাটফর্ম ফি' })}</span><span>৳{result.costEstimate.platformFee?.toLocaleString?.() ?? result.costEstimate.platformFee}</span></div>
+                      <div className="mt-1 flex justify-between border-t border-warm-border pt-2 font-semibold text-warm-ink"><span>{t('aiTotal', { en: 'Estimated total', bn: 'আনুমানিক মোট' })}</span><span>৳{result.costEstimate.total?.toLocaleString?.() ?? result.costEstimate.total}</span></div>
+                      <div className="mt-1 text-xs text-warm-muted">{t('aiConfidence', { en: `Confidence: ${result.costEstimate.confidence}`, bn: `আস্থা: ${result.costEstimate.confidence}` })}</div>
+                    </div>
                   )}
 
                   {result.products.length > 0 && (

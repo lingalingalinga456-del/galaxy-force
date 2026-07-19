@@ -18,7 +18,7 @@ export default async function Home() {
             <span className="text-heading text-xl font-bold">Galaxy Workforce</span>
           </Link>
           <nav className="hidden md:flex items-center gap-6 text-sm">
-            <Link href="/discover" className="hover:text-warm-red">Discover Talent</Link>
+            <Link href="/discover" className="hover:text-warm-red">Discover Workforce</Link>
             <Link href="/jobs" className="hover:text-warm-red">Find Work</Link>
             <Link href="/pricing" className="hover:text-warm-red">Pricing</Link>
             <Link href="/about" className="hover:text-warm-red">About</Link>
@@ -40,13 +40,13 @@ export default async function Home() {
         <div className="container mx-auto px-4 py-20 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-warm-beige text-warm-muted text-sm mb-6">
             <Sparkles className="w-4 h-4" />
-            AI-powered human workforce marketplace
+            AI-powered Human Resource Marketplace
           </div>
           <h1 className="text-heading text-5xl md:text-6xl font-bold mb-6 max-w-4xl mx-auto">
-            Find the right talent for every task
+            Find Trusted Workers for Any Job
           </h1>
           <p className="text-lg text-warm-muted mb-8 max-w-2xl mx-auto">
-            Connect with skilled freelancers, helpers, and remote workers. Get AI-assisted matching, secure contracts, and seamless collaboration.
+            Connect with skilled workers, technicians, and professionals. Describe the job in plain language and let AI match the right person — from plumbers to programmers.
           </p>
           <div className="mb-8 flex justify-center">
             <AiRequestBar />
@@ -54,12 +54,12 @@ export default async function Home() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/register?role=client">
               <Button size="lg" className="gap-2">
-                Hire Talent <ArrowRight className="w-4 h-4" />
+                Hire a Worker <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
             <Link href="/register?role=talent">
               <Button size="lg" variant="secondary" className="gap-2">
-                Join as Talent <ArrowRight className="w-4 h-4" />
+                Join the Workforce <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
           </div>
@@ -92,8 +92,8 @@ export default async function Home() {
       {/* Categories */}
       <section className="py-20">
         <div className="container mx-auto px-4">
-          <h2 className="text-heading text-3xl font-bold mb-4 text-center">Explore by Category</h2>
-          <p className="text-warm-muted text-center mb-12">Find talent across all major skill areas</p>
+          <h2 className="text-heading text-3xl font-bold mb-4 text-center">Discover the Workforce</h2>
+          <p className="text-warm-muted text-center mb-12">From skilled trades to digital services — find the right person for any job</p>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {categories.map((cat) => (
               <Link key={cat.slug} href={`/discover?category=${cat.slug}`}>
@@ -120,12 +120,12 @@ export default async function Home() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/register?role=client">
               <Button size="lg" variant="secondary" className="gap-2">
-                Hire Talent <ArrowRight className="w-4 h-4" />
+                Hire a Worker <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
             <Link href="/register?role=talent">
               <Button size="lg" variant="ghost" className="gap-2 bg-white text-warm-red hover:bg-warm-beige">
-                Join as Talent <ArrowRight className="w-4 h-4" />
+                Join the Workforce <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
           </div>

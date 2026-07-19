@@ -37,6 +37,64 @@ function extractLocation(text: string): string {
   return found ? found.charAt(0).toUpperCase() + found.slice(1) : 'Dhaka';
 }
 
+// §6 AI understanding expansion
+function detectUrgency(text: string): 'emergency' | 'urgent' | 'normal' {
+  const l = text.toLowerCase();
+  if (/\b(emergency|asap|urgent|immediately|now|breakdown|leak|no power)\b/.test(l)) return 'emergency';
+  if (/\b(soon|today|tomorrow|quick|fast)\b/.test(l)) return 'urgent';
+  return 'normal';
+}
+
+function detectIndoorOutdoor(text: string): 'indoor' | 'outdoor' | 'unknown' {
+  const l = text.toLowerCase();
+  if (/\b(home|house|office|indoor|room|apartment|flat|inside)\b/.test(l)) return 'indoor';
+  if (/\b(road|outdoor|garden|construction|site|field|outside|roof)\b/.test(l)) return 'outdoor';
+  return 'unknown';
+}
+
+function detectWorkerCount(text: string): number {
+  const m = text.toLowerCase().match(/(\d+)\s*(workers?|people|persons?|team|helpers?)/);
+  if (m) return parseInt(m[1], 10);
+  if (/\bteam\b/.test(text.toLowerCase())) return 3;
+  return 1;
+}
+
+function detectMaterialsRequired(text: string): boolean {
+  const l = text.toLowerCase();
+  return /\b(material|parts?|supply|equipment|tool|pad|paint|wire|cable|brake|oil|battery|provide materials|need materials|with materials)\b/.test(l);
+}
+
+function buildExplanation(t: any, location: string, urgency: string): string {
+  const reasons: string[] = [];
+  if (t.distanceKm !== undefined) reasons.push(`Within ${t.distanceKm} km of ${location}`);
+  if (t.availableNow) reasons.push('Available now');
+  if (t.completedContracts > 0) reasons.push(`Completed ${t.completedContracts} jobs`);
+  if (t.verified) reasons.push('Identity verified');
+  if (urgency === 'emergency' && t.emergencyAvailable) reasons.push('Offers emergency service');
+  if (t.skills?.length) reasons.push(`Specializes in ${t.skills.slice(0, 2).join(', ')}`);
+  return reasons.length ? `Recommended because: ${reasons.join(' · ')}` : 'Recommended match for your request.';
+}
+
+function estimateCost(best: any | null, workerCount: number, materialsRequired: boolean): any {
+  if (!best || !best.hourlyRate) {
+    return { labor: 0, materials: materialsRequired ? 'quote' : 0, travel: 0, platformFee: 0, total: 0, confidence: 'low' };
+  }
+  const estHours = 2 * workerCount;
+  const labor = Math.round(best.hourlyRate * estHours * workerCount);
+  const travel = Math.round((best.maxTravelKm || 10) * 15);
+  const platformFee = Math.round(labor * 0.05);
+  const materials = materialsRequired ? 'quote' : 0;
+  const total = labor + travel + platformFee + (typeof materials === 'number' ? materials : 0);
+  return {
+    labor,
+    materials,
+    travel,
+    platformFee,
+    total,
+    confidence: best.matchScore >= 60 ? 'high' : best.matchScore >= 40 ? 'medium' : 'low',
+  };
+}
+
 export async function POST(request: NextRequest) {
   const supabase = createServiceClient();
 
@@ -130,7 +188,16 @@ export async function POST(request: NextRequest) {
     console.error('Product fetch failed', e);
   }
 
-  // 3. LeadScrape Pro fallback — only when HR matching fails
+  // §6/§14/§15 AI understanding + explanation + cost estimate
+  const urgency = detectUrgency(query);
+  const indoorOutdoor = detectIndoorOutdoor(query);
+  const workerCount = detectWorkerCount(query);
+  const materialsRequired = detectMaterialsRequired(query);
+  const best = showTalent ? talentMatches[0] : null;
+  const explanation = best ? buildExplanation(best, location, urgency) : null;
+  const costEstimate = estimateCost(best, workerCount, materialsRequired);
+
+  // 3. LeadScrape Pro fallback — only when HR matching fails (§7 priority order)
   let fallback: any[] = [];
   if (!showTalent && talentMatches.length > 0) {
     fallback = getLeadScrapeFallback(query, location);
@@ -141,6 +208,15 @@ export async function POST(request: NextRequest) {
     query,
     language,
     location,
+    understanding: {
+      urgency,
+      indoorOutdoor,
+      workerCount,
+      materialsRequired,
+      preferredLanguage: language,
+    },
+    explanation,
+    costEstimate,
     talent: showTalent ? talentMatches.slice(0, 6) : [],
     products: products.slice(0, 6),
     fallback,
