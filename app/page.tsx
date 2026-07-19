@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Sparkles } from 'lucide-react';
+import { AiRequestBar } from '@/components/ai/ai-request-bar';
 
 export const dynamic = 'force-dynamic';
 
@@ -47,6 +48,9 @@ export default async function Home() {
           <p className="text-lg text-warm-muted mb-8 max-w-2xl mx-auto">
             Connect with skilled freelancers, helpers, and remote workers. Get AI-assisted matching, secure contracts, and seamless collaboration.
           </p>
+          <div className="mb-8 flex justify-center">
+            <AiRequestBar />
+          </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/register?role=client">
               <Button size="lg" className="gap-2">

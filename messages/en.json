@@ -752,5 +752,17 @@
     "addFirstProduct": "Add Product",
     "lowStock": "Low stock",
     "outOfStock": "Out of stock"
+  },
+  "aiRequest": {
+    "placeholder": "Describe what you need in English or বাংলা…",
+    "ask": "Ask AI",
+    "matchTitle": "Galaxy AI — Find the right person",
+    "matchHint": "e.g. \"Need a plumber in Gulshan for AC repair\"",
+    "talentMatches": "Human workers",
+    "productMatches": "Shop products",
+    "external": "External Recommendation — Not on Galaxy Workforce",
+    "externalNote": "Provided by LeadScrape Pro (simulated). These are not Galaxy Workforce members.",
+    "viewProfile": "View profile →",
+    "noResult": "No matches yet. Try describing the work in more detail."
   }
 }

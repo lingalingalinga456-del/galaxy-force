@@ -4,12 +4,15 @@ import { createClient } from '@/lib/supabase/server';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MarketingHeader, MarketingFooter } from '@/components/marketing/shell';
+import { createTranslator, getLocale } from '@/lib/i18n/server';
 
 export const dynamic = 'force-dynamic';
 
 export default async function TalentProfilePage({ params }: { params: Promise<{ username: string }> }) {
   const supabase = await createClient();
   const { username } = await params;
+  const locale = await getLocale();
+  const t = createTranslator(locale);
 
   const { data: profile } = await supabase
     .from('profiles')
@@ -21,6 +24,12 @@ export default async function TalentProfilePage({ params }: { params: Promise<{ 
   if (!profile) notFound();
 
   const tp = profile.talent_profiles;
+  const completion = Number(tp?.completion_score || 0);
+  const rating = Number(tp?.rating || 0);
+  const trustScore = Math.min(
+    100,
+    Math.round(completion * 0.4 + (rating / 5) * 40 + (profile.is_verified ? 20 : 0))
+  );
 
   return (
     <div className="min-h-screen bg-warm-cream">
@@ -37,6 +46,7 @@ export default async function TalentProfilePage({ params }: { params: Promise<{ 
               <div className="flex items-center gap-3 mt-2 text-sm text-warm-muted">
                 {profile.is_verified && <span className="text-warm-green">✓ Verified</span>}
                 <span className="capitalize">{tp?.availability}</span>
+                <span className="text-warm-gold font-medium">· {t('trustScore', { en: 'Trust Score', bn: 'ট্রাস্ট স্কোর' })}: {trustScore}/100</span>
                 {tp?.country && <span>· {tp.country}</span>}
               </div>
               {tp?.hourly_rate && (

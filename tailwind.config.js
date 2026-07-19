@@ -9,18 +9,18 @@ module.exports = {
     extend: {
       colors: {
         warm: {
-          red: '#D94F4F',
-          'red-hover': '#C43A3A',
-          green: '#5FA777',
-          'green-hover': '#4D8C64',
-          cream: '#FAF7F2',
-          beige: '#F3ECE2',
-          ink: '#1A1A1A',
-          muted: '#6B6B6B',
+          red: '#C94A3F',
+          'red-hover': '#B23E34',
+          gold: '#C9A36B',
+          green: '#4D8B6E',
+          'green-hover': '#3F755C',
+          cream: '#F8F4EC',
+          beige: '#FFFFFF',
+          ink: '#1F1F1F',
+          muted: '#6B665E',
           white: '#FFFFFF',
-          gold: '#D8B26E',
-          danger: '#E25D5D',
-          border: '#E9E2D9',
+          danger: '#C94A3F',
+          border: '#E6DFD4',
         },
       },
       fontFamily: {
@@ -29,12 +29,12 @@ module.exports = {
         bengali: ['var(--font-noto-bengali)', 'Noto Sans Bengali', 'sans-serif'],
       },
       borderRadius: {
-        card: '18px',
-        'card-sm': '12px',
+        card: '20px',
+        'card-sm': '14px',
       },
       boxShadow: {
-        card: '0 2px 8px rgba(26, 26, 26, 0.04), 0 1px 3px rgba(26, 26, 26, 0.02)',
-        'card-hover': '0 8px 24px rgba(26, 26, 26, 0.08), 0 4px 12px rgba(26, 26, 26, 0.04)',
+        card: '0 4px 20px rgba(0, 0, 0, 0.04)',
+        'card-hover': '0 10px 30px rgba(0, 0, 0, 0.07)',
       },
       transitionDuration: {
         fast: '160ms',
