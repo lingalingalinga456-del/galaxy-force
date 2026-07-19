@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Sparkles, LayoutDashboard, FileText, Send, ClipboardCheck, MessageSquare, Wallet, FolderOpen, Settings, LogOut, Home, Compass, Briefcase } from 'lucide-react';
+import { Sparkles, LayoutDashboard, FileText, Send, ClipboardCheck, MessageSquare, Wallet, FolderOpen, Settings, LogOut, Home, Compass, Briefcase, TrendingUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
@@ -14,6 +14,7 @@ const links = [
   { href: '/talent-dashboard/earnings', label: 'Earnings', icon: Wallet },
   { href: '/talent-dashboard/portfolio', label: 'Portfolio', icon: FolderOpen },
   { href: '/talent-dashboard/profile', label: 'Profile', icon: FileText },
+  { href: '/talent-dashboard/growth', label: 'Growth', icon: TrendingUp },
   { href: '/talent-dashboard/settings', label: 'Settings', icon: Settings },
 ];
 

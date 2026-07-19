@@ -197,6 +197,11 @@ export async function POST(request: NextRequest) {
   const explanation = best ? buildExplanation(best, location, urgency) : null;
   const costEstimate = estimateCost(best, workerCount, materialsRequired);
 
+  // §10 Material management — who provides materials
+  const materialProvider: 'client' | 'worker' | 'shop_owner' | 'split' = materialsRequired
+    ? (/\b(shop|store|buy|purchase)\b/.test(query.toLowerCase()) ? 'shop_owner' : /\b(split|share)\b/.test(query.toLowerCase()) ? 'split' : 'worker')
+    : 'client';
+
   // 3. LeadScrape Pro fallback — only when HR matching fails (§7 priority order)
   let fallback: any[] = [];
   if (!showTalent && talentMatches.length > 0) {
@@ -213,6 +218,7 @@ export async function POST(request: NextRequest) {
       indoorOutdoor,
       workerCount,
       materialsRequired,
+      materialProvider,
       preferredLanguage: language,
     },
     explanation,

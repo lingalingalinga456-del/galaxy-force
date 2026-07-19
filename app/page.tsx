@@ -147,19 +147,19 @@ export default async function Home() {
           <div>
             <h3 className="font-semibold mb-4">Product</h3>
             <ul className="space-y-2 text-sm text-white/70">
-              <li><Link href="/discover" className="hover:text-white">Discover Talent</Link></li>
+              <li><Link href="/discover" className="hover:text-white">Discover Workforce</Link></li>
               <li><Link href="/jobs" className="hover:text-white">Find Work</Link></li>
               <li><Link href="/pricing" className="hover:text-white">Pricing</Link></li>
               <li><Link href="/about" className="hover:text-white">About</Link></li>
             </ul>
           </div>
           <div>
-            <h3 className="font-semibold mb-4">Resources</h3>
+            <h3 className="font-semibold mb-4">Partners</h3>
             <ul className="space-y-2 text-sm text-white/70">
+              <li><a href="https://lead-scrape-pro-2.vibepreview.com" target="_blank" rel="noopener noreferrer" className="hover:text-white">LeadScrape Pro</a></li>
               <li><Link href="/faq" className="hover:text-white">FAQ</Link></li>
               <li><Link href="/legal/terms" className="hover:text-white">Terms</Link></li>
               <li><Link href="/legal/privacy" className="hover:text-white">Privacy</Link></li>
-              <li><Link href="/legal/cookies" className="hover:text-white">Cookies</Link></li>
             </ul>
           </div>
           <div>

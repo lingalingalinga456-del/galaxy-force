@@ -11,9 +11,12 @@ export type FallbackBusiness = {
   contact: string;
   source: 'LeadScrape Pro';
   external: true;
+  externalUrl: string;
 };
 
-const POOL: Omit<FallbackBusiness, 'id' | 'source' | 'external'>[] = [
+export const LEADSCRAPE_PRO_URL = 'https://lead-scrape-pro-2.vibepreview.com';
+
+const POOL: Omit<FallbackBusiness, 'id' | 'source' | 'external' | 'externalUrl'>[] = [
   { name: 'Dhaka Labor Supply Co.', category: 'General Labor', location: 'Dhaka', rating: 4.2, contact: '+880 1700-111-222' },
   { name: 'QuickFix Handymen', category: 'Repairs', location: 'Gulshan', rating: 4.0, contact: '+880 1700-333-444' },
   { name: 'ProClean Services', category: 'Cleaning', location: 'Banani', rating: 4.5, contact: '+880 1700-555-666' },
@@ -48,6 +51,7 @@ export function getLeadScrapeFallback(query: string, location: string): Fallback
       id: `ls-${seed}-${i}`,
       source: 'LeadScrape Pro',
       external: true,
+      externalUrl: LEADSCRAPE_PRO_URL,
     });
   }
 

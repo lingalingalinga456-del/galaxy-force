@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Shield, LayoutDashboard, Users, Flag, CreditCard, Settings, ScrollText, LogOut, Home, Compass, Briefcase } from 'lucide-react';
+import { Shield, LayoutDashboard, Users, Flag, CreditCard, Settings, ScrollText, LogOut, Home, Compass, Briefcase, HeartHandshake } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
@@ -12,6 +12,7 @@ const links = [
   { href: '/admin/moderation', label: 'Moderation', icon: Flag },
   { href: '/admin/transactions', label: 'Transactions', icon: CreditCard },
   { href: '/admin/audit', label: 'Audit Log', icon: ScrollText },
+  { href: '/admin/impact', label: 'Social Impact', icon: HeartHandshake },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
 ];
 

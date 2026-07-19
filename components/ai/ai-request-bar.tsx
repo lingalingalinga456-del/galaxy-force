@@ -230,8 +230,17 @@ export function AiRequestBar() {
                           </div>
                         ))}
                       </div>
+                      <a
+                        href="https://lead-scrape-pro-2.vibepreview.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-3 inline-flex items-center gap-2 rounded-card-sm bg-warm-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                        {t('aiFindMore', { en: 'Find more leads on LeadScrape Pro', bn: 'লিডস্ক্রেপ প্রো-তে আরও লিড খুঁজুন' })}
+                      </a>
                       <p className="mt-2 text-xs text-warm-muted">
-                        {t('aiExternalNote', { en: 'Provided by LeadScrape Pro (simulated). These are not Galaxy Workforce members.', bn: 'লিডস্ক্রেপ প্রো (সিমুলেটেড) দ্বারা সরবরাহিত। এরা গ্যালাক্সি ওয়ার্কফোর্সের সদস্য নয়।' })}
+                        {t('aiExternalNote', { en: 'Provided by LeadScrape Pro. These are not Galaxy Workforce members — open the site to contact them directly.', bn: 'লিডস্ক্রেপ প্রো দ্বারা সরবরাহিত। এরা গ্যালাক্সি ওয়ার্কফোর্সের সদস্য নয় — সরাসরি যোগাযোগ করতে সাইটটি খুলুন।' })}
                       </p>
                     </section>
                   )}
