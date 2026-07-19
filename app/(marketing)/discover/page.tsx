@@ -250,6 +250,12 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Pro
             </ul>
           </div>
           <div>
+            <h3 className="font-semibold mb-4">Partners</h3>
+            <ul className="space-y-2 text-sm text-white/70">
+              <li><a href="https://lead-scrape-pro-2.vibepreview.com" target="_blank" rel="noopener noreferrer" className="hover:text-white">LeadScrape Pro</a></li>
+            </ul>
+          </div>
+          <div>
             <h3 className="font-semibold mb-4">Legal</h3>
             <ul className="space-y-2 text-sm text-white/70">
               <li><Link href="/legal/terms" className="hover:text-white">Terms</Link></li>
