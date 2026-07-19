@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { ThemeProvider } from 'next-themes';
 import { NavProgress } from '@/components/nav-progress';
+import { AIAssistant } from '@/components/ai/ai-assistant';
 import './styles.css';
 
 export const metadata: Metadata = {
@@ -34,6 +35,7 @@ export default function RootLayout({
         >
           {children}
         </ThemeProvider>
+        <AIAssistant />
       </body>
     </html>
   );
