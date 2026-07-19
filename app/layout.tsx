@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { ThemeProvider } from 'next-themes';
+import { NavProgress } from '@/components/nav-progress';
 import './styles.css';
 
 export const metadata: Metadata = {
@@ -24,6 +25,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head />
       <body className="bg-warm-cream text-warm-ink antialiased font-body">
+        <NavProgress />
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
