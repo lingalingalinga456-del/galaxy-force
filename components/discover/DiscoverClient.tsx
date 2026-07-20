@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, SlidersHorizontal, Star, BadgeCheck, Store, ExternalLink, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { SearchWithSuggestions } from '@/components/search/SearchWithSuggestions';
 
 function Img({ src, alt, className }: { src: string; alt: string; className?: string }) {
   return (
@@ -58,13 +59,11 @@ export function DiscoverClient({ categories, realWorkers, realTeams, realShops, 
   const minPrice = Number(params.get('min_price') || 0);
   const maxPrice = Number(params.get('max_price') || 5000);
 
-  const [search, setSearch] = useState(q);
   const [ph, setPh] = useState(PLACEHOLDERS[0]);
   const [avail, setAvail] = useState<string>('all');
   const [verifiedOnly, setVerifiedOnly] = useState(false);
   const [mobileFilters, setMobileFilters] = useState(false);
 
-  useEffect(() => { setSearch(q); }, [q]);
   useEffect(() => {
     const t = setInterval(() => setPh(PLACEHOLDERS[Math.floor(Math.random() * PLACEHOLDERS.length)]), 2800);
     return () => clearInterval(t);
@@ -80,11 +79,6 @@ export function DiscoverClient({ categories, realWorkers, realTeams, realShops, 
     const p = new URLSearchParams(Array.from(params.entries()));
     Object.entries(next).forEach(([k, v]) => { if (v) p.set(k, v); else p.delete(k); });
     router.push(`/discover?${p.toString()}`);
-  }
-
-  function runSearch(e: React.FormEvent) {
-    e.preventDefault();
-    sync({ q: search.trim() });
   }
 
   // Filtering
@@ -112,14 +106,10 @@ export function DiscoverClient({ categories, realWorkers, realTeams, realShops, 
           <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white text-warm-muted text-sm mb-4 shadow-card"><Search className="w-4 h-4 text-warm-red" /> AI-powered Human Resource Marketplace</span>
           <h1 className="text-heading text-4xl md:text-5xl font-bold mb-3 text-warm-ink">Discover Nearby Human Workforce</h1>
           <p className="text-warm-muted max-w-2xl mx-auto mb-6">Search 1,200+ verified tradesmen, physical repair teams, and local shops near you.</p>
-          <form onSubmit={runSearch} className="max-w-2xl mx-auto">
-            <div className="flex items-center gap-2 rounded-full bg-white shadow-card-lift border border-transparent focus-within:border-warm-gold focus-within:ring-4 focus-within:ring-warm-gold/15 transition-all px-5 py-3">
-              <Search className="w-5 h-5 text-warm-muted shrink-0" />
-              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder={ph} className="flex-1 bg-transparent outline-none text-warm-ink placeholder:text-warm-muted" />
-              <Button type="submit" size="sm" className="rounded-full">Search</Button>
-            </div>
-            <p className="text-xs text-warm-muted mt-2">Supports English + বাংলা</p>
-          </form>
+          <div className="max-w-2xl mx-auto">
+            <SearchWithSuggestions scope="all" defaultValue={q} placeholder={ph} size="lg" />
+            <p className="text-xs text-warm-muted mt-2">Supports English + বাংলা · start typing for live suggestions</p>
+          </div>
         </div>
       </section>
 

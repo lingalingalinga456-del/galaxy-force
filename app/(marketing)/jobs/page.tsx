@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { MarketingHeader, MarketingFooter } from '@/components/marketing/shell';
 import { JobCard } from '@/components/design-system/JobCard';
 import { CategoryChip } from '@/components/design-system/CategoryChip';
 import { MobileBottomNav } from '@/components/design-system/MobileBottomNav';
 import { Plus } from 'lucide-react';
+import { SearchWithSuggestions } from '@/components/search/SearchWithSuggestions';
 
 export const dynamic = 'force-dynamic';
 
@@ -33,12 +33,9 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
         <div className="container mx-auto px-4">
           <h1 className="text-heading text-3xl md:text-4xl font-bold mb-2">Find Work</h1>
           <p className="text-warm-muted mb-6">Browse open jobs from clients across Bangladesh and beyond.</p>
-          <form action="/jobs" method="GET" className="max-w-2xl">
-            <div className="relative">
-              <Input name="search" defaultValue={search || ''} placeholder="Search jobs by title or skill..." className="w-full pr-32" />
-              <Button type="submit" className="absolute right-1 top-1">Search</Button>
-            </div>
-          </form>
+          <div className="max-w-2xl">
+            <SearchWithSuggestions scope="jobs" defaultValue={search || ''} placeholder="Search jobs by title or skill…" />
+          </div>
           <div className="flex flex-wrap gap-2 mt-4">
             <CategoryChip label="All" active={!category} href="/jobs" />
             {(categories || []).map((c: any) => (

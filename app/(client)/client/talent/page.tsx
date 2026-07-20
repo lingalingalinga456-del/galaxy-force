@@ -1,9 +1,8 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
+import { SearchWithSuggestions } from '@/components/search/SearchWithSuggestions';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,12 +21,9 @@ export default async function ClientTalentPage({ searchParams }: { searchParams:
   return (
     <div className="p-6 lg:p-8">
       <h1 className="text-2xl font-bold text-warm-ink mb-2">Discover Talent</h1>
-      <form action="/client/talent" method="GET" className="max-w-xl mb-6">
-        <div className="relative">
-          <Input name="search" defaultValue={search || ''} placeholder="Search by name or skill..." className="w-full pr-32" />
-          <Button type="submit" className="absolute right-1 top-1">Search</Button>
-        </div>
-      </form>
+      <div className="max-w-xl mb-6">
+        <SearchWithSuggestions scope="talent" defaultValue={search || ''} placeholder="Search by name or skill…" />
+      </div>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
         {talent?.map((t: any) => (
           <Link key={t.id} href={`/talent/${t.profiles?.username}`}>

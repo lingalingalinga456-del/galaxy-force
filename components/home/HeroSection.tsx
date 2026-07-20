@@ -1,14 +1,13 @@
 ﻿'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { motion, useReducedMotion } from 'framer-motion';
-import { ArrowRight, Sparkles, Search, BadgeCheck } from 'lucide-react';
+import { ArrowRight, Sparkles, BadgeCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { IMG, Img } from './home-shared';
+import { SearchWithSuggestions } from '@/components/search/SearchWithSuggestions';
 
-const PH = ['Need a mechanic nearby?', 'Hire a cleaner today', 'Find a tutor in Dhaka', 'Need help with AC repair'];
 
 function FloatingCards() {
   const reduce = useReducedMotion();
@@ -44,24 +43,7 @@ function FloatingCards() {
 }
 
 export function HeroSection() {
-  const router = useRouter();
-  const [query, setQuery] = useState('');
-  const [ph, setPh] = useState(PH[0]);
   const [mode, setMode] = useState<'workers' | 'shops'>('workers');
-
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    let i = 0;
-    const t = setInterval(() => { i = (i + 1) % PH.length; setPh(PH[i]); }, 2800);
-    return () => clearInterval(t);
-  }, []);
-
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const q = encodeURIComponent(query.trim() || ph);
-    const base = mode === 'shops' ? '/discover?tab=shops' : '/discover';
-    router.push(`${base}&query=${q}`);
-  };
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-b from-warm-cream to-warm-beige">
@@ -82,13 +64,13 @@ export function HeroSection() {
             <button onClick={() => setMode('workers')} className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${mode === 'workers' ? 'bg-white shadow text-warm-ink' : 'text-warm-muted'}`}>Find Workers</button>
             <button onClick={() => setMode('shops')} className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${mode === 'shops' ? 'bg-white shadow text-warm-ink' : 'text-warm-muted'}`}>Browse Shops</button>
           </div>
-          <form onSubmit={submit} className="relative max-w-2xl">
-            <div className="flex items-center gap-2 rounded-full bg-white shadow-card-lift border border-transparent focus-within:border-warm-gold focus-within:ring-4 focus-within:ring-warm-gold/15 transition-all duration-200 px-5 py-3">
-              <Search className="w-5 h-5 text-warm-muted shrink-0" />
-              <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder={ph} className="flex-1 bg-transparent outline-none text-warm-ink placeholder:text-warm-muted" />
-              <Button type="submit" size="sm" className="rounded-full gap-1">Find</Button>
-            </div>
-          </form>
+          <div className="max-w-2xl">
+            <SearchWithSuggestions
+              scope={mode === 'shops' ? 'shops' : 'all'}
+              placeholder={mode === 'shops' ? 'Search shops, products, hardware…' : 'Search workers, skills, “fix my AC”…'}
+              size="lg"
+            />
+          </div>
           <div className="flex flex-col sm:flex-row gap-4 mt-6">
             <Link href="/client/jobs/new"><Button size="lg" className="gap-2">Hire Human Workers <ArrowRight className="w-4 h-4" /></Button></Link>
             <Link href="/talent-dashboard/jobs"><Button size="lg" variant="secondary" className="gap-2">Find Work <ArrowRight className="w-4 h-4" /></Button></Link>
