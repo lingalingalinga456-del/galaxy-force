@@ -1,12 +1,5 @@
-import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
-import { Button } from '@/components/ui/button';
-import { MarketingHeader, MarketingFooter } from '@/components/marketing/shell';
-import { JobCard } from '@/components/design-system/JobCard';
-import { CategoryChip } from '@/components/design-system/CategoryChip';
-import { MobileBottomNav } from '@/components/design-system/MobileBottomNav';
-import { Plus } from 'lucide-react';
-import { SearchWithSuggestions } from '@/components/search/SearchWithSuggestions';
+import { FindWorkClient } from '@/components/talent/FindWorkClient';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,74 +7,43 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
   const supabase = await createClient();
   const { search, category } = await searchParams;
 
-  let query = supabase
-    .from('jobs')
-    .select('id, title, description, budget_type, budget_min, budget_max, experience_level, skills, status, created_at, category_id, profiles!inner(full_name, username), categories(name_en, name_bn, slug)')
-    .eq('status', 'open')
-    .eq('moderation_state', 'approved');
+  let jobs: any[] = [];
+  try {
+    let query = supabase
+      .from('jobs')
+      .select('id, title, description, budget_type, budget_min, budget_max, experience_level, skills, status, created_at, category_id, owner_id, profiles!inner(full_name, username, is_verified), categories(name_en, slug)')
+      .eq('status', 'open')
+      .eq('moderation_state', 'approved');
 
-  if (search) query = query.ilike('title', `%${search}%`);
-  if (category) query = query.eq('categories.slug', category);
+    if (search) query = query.ilike('title', `%${search}%`);
+    if (category) query = query.eq('categories.slug', category);
 
-  const { data: jobs } = await query.order('created_at', { ascending: false }).limit(30);
-  const { data: categories } = await supabase.from('categories').select('*').eq('is_active', true).order('sort_order');
+    const { data } = await query.order('created_at', { ascending: false }).limit(30);
+    jobs = (data || []).map((j: any) => ({
+      id: j.id,
+      title: j.title,
+      description: j.description,
+      subcategory: (j.skills && j.skills[0]) || j.categories?.name_en || 'General',
+      category: j.categories?.slug || 'skilled-trades',
+      clientName: j.profiles?.full_name || 'Client',
+      clientVerified: !!j.profiles?.is_verified,
+      budgetType: j.budget_type || 'fixed',
+      budget: Number(j.budget_max || j.budget_min || 0),
+      location: j.categories?.name_en || 'Bangladesh',
+      distanceKm: 5,
+      jobType: j.experience_level === 'expert' ? 'One-time' : 'One-time',
+      proposalsCount: 0,
+      postedAt: '1d',
+      matchScore: 80,
+      skills: j.skills || [],
+      experienceLevel: j.experience_level || 'intermediate',
+      workersNeeded: 1,
+      urgent: false,
+      timeline: j.timeline_days ? `${j.timeline_days} days` : '3 days',
+    }));
+  } catch (e) {
+    console.error('Jobs fetch error:', e);
+  }
 
-  return (
-    <div className="min-h-screen bg-warm-cream">
-      <MarketingHeader />
-      <section className="py-10 bg-warm-beige">
-        <div className="container mx-auto px-4">
-          <h1 className="text-heading text-3xl md:text-4xl font-bold mb-2">Find Work</h1>
-          <p className="text-warm-muted mb-6">Browse open jobs from clients across Bangladesh and beyond.</p>
-          <div className="max-w-2xl">
-            <SearchWithSuggestions scope="jobs" defaultValue={search || ''} placeholder="Search jobs by title or skill…" />
-          </div>
-          <div className="flex flex-wrap gap-2 mt-4">
-            <CategoryChip label="All" active={!category} href="/jobs" />
-            {(categories || []).map((c: any) => (
-              <CategoryChip
-                key={c.slug}
-                label={c.name_en}
-                icon={c.icon}
-                active={category === c.slug}
-                href={`/jobs?category=${c.slug}`}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-10">
-        <div className="container mx-auto px-4 grid gap-4">
-          {(jobs || []).map((job: any) => (
-            <JobCard
-              key={job.id}
-              job={{
-                id: job.id,
-                title: job.title,
-                clientName: job.profiles?.full_name,
-                budgetType: job.budget_type,
-                budget: Number(job.budget_max || job.budget_min || 0),
-                location: job.categories?.name_en,
-                postedAt: new Date(job.created_at).toLocaleDateString(),
-              }}
-            />
-          ))}
-          {(!jobs || jobs.length === 0) && (
-            <div className="text-center py-12 text-warm-muted">No jobs found. Try a different search.</div>
-          )}
-        </div>
-      </section>
-
-      {/* Floating Post a Job button */}
-      <Link href="/client/jobs/new" className="fixed bottom-20 right-6 z-40 lg:bottom-8">
-        <Button size="lg" className="rounded-full shadow-card-lift gap-2">
-          <Plus className="w-5 h-5" /> Post a Job
-        </Button>
-      </Link>
-
-      <MarketingFooter />
-      <MobileBottomNav />
-    </div>
-  );
+  return <FindWorkClient realJobs={jobs} />;
 }
