@@ -151,8 +151,10 @@ function WorkerCard({ w }: { w: any }) {
   return (
     <Link href={`/talent/${w.username || w.id}`} className="group shrink-0 w-[300px]">
       <div className="rounded-[32px] bg-white border border-warm-border shadow-card hover:shadow-card-lift transition-all duration-200 hover:scale-[1.015] overflow-hidden">
-        <div className="h-[180px] bg-warm-beige relative">
-          <Img src={w.photo} alt={w.name} className="w-full h-full object-cover" />
+        <div className="h-[180px] bg-gradient-to-br from-warm-beige to-warm-cream relative flex items-center justify-center overflow-hidden">
+          {w.photo ? <Img src={w.photo} alt={w.name} className="w-full h-full object-cover" /> : (
+            <div className="w-20 h-20 rounded-full bg-warm-red/10 flex items-center justify-center text-3xl font-bold text-warm-red">{w.name?.charAt(0) || 'W'}</div>
+          )}
           <div className="absolute top-3 right-3 bg-white/90 rounded-full px-2 py-1 text-xs font-bold text-warm-ink shadow">★ {w.score}</div>
         </div>
         <div className="p-4">
@@ -295,7 +297,17 @@ const FAQS = [
   { q: 'How are payments protected?', a: 'Payments are held in escrow and released only after the job is confirmed complete, keeping both clients and workers safe.' },
 ];
 
-export default function HomeContent({ categories }: { categories: any[] }) {
+export default function HomeContent({
+  categories,
+  stats,
+  featuredWorkers,
+  activity,
+}: {
+  categories: any[];
+  stats?: { verifiedWorkers: number; companies: number; jobsCompleted: number; avgRating: number };
+  featuredWorkers?: any[];
+  activity?: { text: string; time: string }[];
+}) {
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll();
   const meshY = useTransform(scrollYProgress, [0, 1], [0, -60]);
@@ -351,10 +363,10 @@ export default function HomeContent({ categories }: { categories: any[] }) {
       <section className="py-14 bg-warm-beige">
         <div className="container mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6">
           {[
-            { v: 12450, s: '+', l: 'Verified Workers', icon: <UserCheck className="w-4 h-4" /> },
-            { v: 3280, s: '+', l: 'Companies', icon: <ShieldCheck className="w-4 h-4" /> },
-            { v: 87500, s: '+', l: 'Jobs Completed', icon: <BadgeCheck className="w-4 h-4" /> },
-            { v: 4.9, s: '/5', l: 'Average Rating', d: 1, icon: <Star className="w-4 h-4" /> },
+            { v: (stats?.verifiedWorkers ?? 12450), s: '+', l: 'Verified Workers', icon: <UserCheck className="w-4 h-4" /> },
+            { v: (stats?.companies ?? 3280), s: '+', l: 'Companies', icon: <ShieldCheck className="w-4 h-4" /> },
+            { v: (stats?.jobsCompleted ?? 87500), s: '+', l: 'Jobs Completed', icon: <BadgeCheck className="w-4 h-4" /> },
+            { v: (stats?.avgRating ?? 4.9), s: '/5', l: 'Average Rating', d: 1, icon: <Star className="w-4 h-4" /> },
           ].map((c, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.08 }} className="flex flex-col items-center text-center rounded-[20px] bg-white/70 border border-warm-border px-4 py-6 shadow-card">
               <div className="w-9 h-9 rounded-full bg-warm-gold/15 text-warm-ink flex items-center justify-center mb-2">{c.icon}</div>
@@ -424,7 +436,7 @@ export default function HomeContent({ categories }: { categories: any[] }) {
         <div className="container mx-auto px-4">
           <SectionTitle kicker="Hand-picked talent" title="Featured Workforce" sub="Verified, trusted, and ready to help — meet some of our top workers." />
           <div className="flex gap-5 overflow-x-auto pb-4 snap-x">
-            {WORKERS.map((w, i) => <div key={w.id} className="snap-start"><WorkerCard w={w} /></div>)}
+            {(featuredWorkers && featuredWorkers.length ? featuredWorkers : WORKERS).map((w: any) => <div key={w.id} className="snap-start"><WorkerCard w={w} /></div>)}
           </div>
           <div className="text-center mt-8"><Link href="/discover"><Button size="lg" variant="secondary" className="gap-2">View All Talent <ArrowRight className="w-4 h-4" /></Button></Link></div>
         </div>
@@ -434,7 +446,7 @@ export default function HomeContent({ categories }: { categories: any[] }) {
       <section className="py-14">
         <div className="container mx-auto px-4">
           <SectionTitle kicker="Live on platform" title="Marketplace Activity" />
-          <LiveActivityFeed items={ACTIVITY} />
+          <LiveActivityFeed items={activity && activity.length ? activity : ACTIVITY} />
         </div>
       </section>
 
