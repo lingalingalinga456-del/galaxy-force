@@ -22,8 +22,8 @@ export function FindWorkClient({ realJobs = [] as Job[] }) {
   const jobs: Job[] = useMemo(() => {
     const real = Array.isArray(realJobs) ? realJobs : [];
     if (!real.length) return demo;
-    if (real.length >= 25) return real;
-    return [...real, ...demo.slice(0, 25 - real.length)];
+    if (real.length >= 30) return real;
+    return [...real, ...demo.slice(0, 30 - real.length)];
   }, [realJobs, demo]);
 
   const [query, setQuery] = useState('');
