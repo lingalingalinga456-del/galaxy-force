@@ -8,7 +8,7 @@ import { SectionTitle, reveal, Img, WORKERS, TEAMS } from './home-shared';
 
 function PremiumWorkerCard({ w, idx = 0, recommended = false }: { w: any; idx?: number; recommended?: boolean }) {
   return (
-    <motion.div {...reveal((idx % 4) * 0.05)} className="group shrink-0 w-[300px] sm:w-[340px]">
+    <motion.div {...reveal((idx % 4) * 0.05)} className="group">
       <Link href={`/talent/${w.username || w.id}`} className="block">
         <div className="w-full h-[420px] rounded-[28px] bg-white border border-warm-border shadow-card hover:shadow-card-lift transition-all duration-200 hover:scale-[1.02] overflow-hidden flex flex-col">
           <div className="relative h-[210px] overflow-hidden bg-gradient-to-br from-warm-beige to-warm-cream">
@@ -42,7 +42,7 @@ function PremiumWorkerCard({ w, idx = 0, recommended = false }: { w: any; idx?: 
 
 function TeamCardMini({ t, idx = 0 }: { t: any; idx?: number }) {
   return (
-    <motion.div {...reveal((idx % 4) * 0.05)} className="group shrink-0 w-[300px] sm:w-[340px]">
+    <motion.div {...reveal((idx % 4) * 0.05)} className="group">
       <Link href="/discover?view=teams" className="block">
         <div className="w-full h-[420px] rounded-[28px] bg-white border border-warm-border shadow-card hover:shadow-card-lift transition-all duration-200 hover:scale-[1.02] overflow-hidden flex flex-col">
           <div className="relative h-[210px] overflow-hidden"><Img src={t.photo} alt={t.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" /><div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" /><div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-warm-gold text-warm-ink text-xs font-semibold shadow">Team</div></div>
@@ -65,7 +65,7 @@ export function FeaturedWorkers({ workers }: { workers?: any[] }) {
     <section className="py-20 bg-warm-beige/60">
       <div className="container mx-auto px-4">
         <SectionTitle kicker="Hand-picked talent" title="Featured Human Workers" sub="Verified, trusted, and ready to help — workers, teams, and shops." />
-        <div className="flex gap-5 overflow-x-auto pb-4 snap-x">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5">
           {mixed.map((item: any, i: number) => item.memberCount !== undefined
             ? <TeamCardMini key={`team-${item.id}`} t={item} idx={i} />
             : <PremiumWorkerCard key={item.id} w={item} idx={i} recommended={i % 3 === 1} />)}

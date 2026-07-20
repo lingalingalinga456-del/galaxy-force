@@ -23,7 +23,7 @@ export function WorkerCard({ worker }: { worker: WorkerCardData }) {
   const href = `/talent/${worker.username || worker.id}`;
   return (
     <Link href={href} className="group block">
-      <div className="w-[320px] h-[380px] rounded-[32px] bg-white border border-warm-border shadow-card hover:shadow-card-lift transition-all duration-200 hover:scale-[1.015] flex flex-col overflow-hidden">
+      <div className="w-full sm:w-80 h-[380px] rounded-[32px] bg-white border border-warm-border shadow-card hover:shadow-card-lift transition-all duration-200 hover:scale-[1.015] flex flex-col overflow-hidden">
         {/* Top image */}
         <div className="relative h-[150px] bg-gradient-to-br from-warm-beige to-warm-cream flex items-center justify-center overflow-hidden">
           {worker.imageUrl ? (

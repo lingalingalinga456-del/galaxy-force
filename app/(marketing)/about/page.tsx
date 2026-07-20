@@ -2,11 +2,11 @@ import { MarketingHeader, MarketingFooter } from '@/components/marketing/shell';
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-warm-cream">
+    <div className="min-h-screen bg-warm-cream pb-20 md:pb-0">
       <MarketingHeader />
       <section className="py-16">
         <div className="container mx-auto px-4 max-w-3xl">
-          <h1 className="text-heading text-4xl font-bold mb-4">About Galaxy Workforce</h1>
+          <h1 className="h1 mb-4">About Galaxy Workforce</h1>
           <p className="text-warm-muted leading-relaxed mb-6">
             Galaxy Workforce is an AI-powered human workforce marketplace built for Bangladesh and the wider region.
             We connect businesses with skilled freelancers, helpers, and remote workers — making it effortless to hire,

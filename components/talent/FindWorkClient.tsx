@@ -6,6 +6,7 @@ import { Search, Bookmark, MapPin, Clock, Star, BadgeCheck, Zap, X, Send, Messag
 import { Button } from '@/components/ui/button';
 import { buildDemoJobs } from '@/lib/jobs-data';
 import { SiteHeader, SiteFooter } from '@/components/layout/SiteChrome';
+import { MobileBottomNav } from '@/components/design-system/MobileBottomNav';
 
 type Job = any;
 
@@ -49,7 +50,7 @@ export function FindWorkClient({ realJobs = [] as Job[] }) {
   function toggleSave(id: string) { setSaved((s) => ({ ...s, [id]: !s[id] })); }
 
   return (
-    <div className="min-h-screen bg-warm-cream">
+    <div className="min-h-screen bg-warm-cream pb-20 md:pb-0">
       <SiteHeader />
       <div className="max-w-[1280px] mx-auto px-4">
         {/* Page header */}
@@ -100,6 +101,7 @@ export function FindWorkClient({ realJobs = [] as Job[] }) {
       </AnimatePresence>
 
       <SiteFooter />
+      <MobileBottomNav />
     </div>
   );
 }

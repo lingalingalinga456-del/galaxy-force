@@ -17,7 +17,7 @@ export function PricingPreview() {
     <section className="py-20 bg-warm-beige/60">
       <div className="container mx-auto px-4">
         <SectionTitle kicker="Simple pricing" title="Pricing Preview" sub="Start free. Upgrade when you grow." />
-        <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {PLANS.map((p, i) => (
             <motion.div key={i} {...reveal(i * 0.08)} className={`relative rounded-[28px] border p-7 hover:scale-[1.015] transition-transform duration-200 ${p.popular ? 'border-warm-red shadow-card-lift bg-white' : 'border-warm-border bg-white shadow-card'}`}>
               {p.popular && <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-warm-red text-white text-xs font-semibold">Most Popular</span>}

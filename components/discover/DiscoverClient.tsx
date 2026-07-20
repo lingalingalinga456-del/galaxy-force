@@ -8,6 +8,7 @@ import { Search, SlidersHorizontal, Star, BadgeCheck, Store, ExternalLink, X } f
 import { Button } from '@/components/ui/button';
 import { SearchWithSuggestions } from '@/components/search/SearchWithSuggestions';
 import { SiteHeader, SiteFooter } from '@/components/layout/SiteChrome';
+import { MobileBottomNav } from '@/components/design-system/MobileBottomNav';
 
 function Img({ src, alt, className }: { src: string; alt: string; className?: string }) {
   return (
@@ -99,7 +100,7 @@ export function DiscoverClient({ categories, realWorkers, realTeams, realShops, 
   const showFallback = (q && (totalResults < 3 || leadScore < 35));
 
   return (
-    <div className="min-h-screen bg-warm-cream">
+    <div className="min-h-screen bg-warm-cream pb-20 md:pb-0">
       <SiteHeader />
       {/* Hero + AI Search */}
       <section className="py-12 md:py-16 bg-gradient-to-b from-warm-cream to-warm-beige">
@@ -197,6 +198,7 @@ export function DiscoverClient({ categories, realWorkers, realTeams, realShops, 
         onSort={(v: string) => sync({ sort: v })} onTrust={(v: string) => sync({ trust: String(v) })} onDist={(v: string) => sync({ dist: String(v) })} onClear={clearAll} />
 
       <SiteFooter />
+      <MobileBottomNav />
     </div>
   );
 

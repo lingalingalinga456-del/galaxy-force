@@ -14,7 +14,7 @@ export type TeamCardData = {
 export function TeamCard({ team }: { team: TeamCardData }) {
   return (
     <Link href={`/teams/${team.id}`} className="block">
-      <div className="w-[320px] h-[380px] rounded-[32px] bg-white border border-warm-border shadow-card hover:shadow-card-lift transition-all duration-200 hover:scale-[1.015] flex flex-col overflow-hidden">
+      <div className="w-full sm:w-80 h-[380px] rounded-[32px] bg-white border border-warm-border shadow-card hover:shadow-card-lift transition-all duration-200 hover:scale-[1.015] flex flex-col overflow-hidden">
         <div className="h-[150px] bg-gradient-to-br from-warm-gold/20 to-warm-beige flex items-center justify-center">
           <div className="w-20 h-20 rounded-full bg-white/70 flex items-center justify-center text-3xl text-warm-gold">
             <Users />

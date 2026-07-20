@@ -28,7 +28,7 @@ function ShopCardMini({ s, idx = 0 }: { s: any; idx?: number }) {
 
 function ProductCardMini({ p }: { p: any }) {
   return (
-    <div className="group shrink-0 w-[220px]">
+    <div className="group">
       <div className="rounded-[20px] bg-white border border-warm-border shadow-card hover:shadow-card-lift transition-all duration-200 overflow-hidden">
         <div className="h-32 bg-gradient-to-br from-warm-beige to-warm-cream relative overflow-hidden"><Img src={p.image} alt={p.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" /></div>
         <div className="p-3">
@@ -60,7 +60,7 @@ export function LocalShopsSection({ shops, products }: { shops?: any[]; products
         {/* Products — full width, responsive grid */}
         <div>
           <h3 className="text-lg font-semibold text-warm-ink mb-4 flex items-center gap-2"><ShoppingBag className="w-5 h-5 text-warm-red" /> Popular Products</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {productList.slice(0, 10).map((p) => <ProductCardMini key={p.id} p={p} />)}
           </div>
         </div>

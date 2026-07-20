@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { SmoothScroll } from '@/components/home/SmoothScroll';
 import { SiteHeader, SiteFooter } from '@/components/layout/SiteChrome';
+import { MobileBottomNav } from '@/components/design-system/MobileBottomNav';
 import { HeroSection } from '@/components/home/HeroSection';
 import { TrustTicker } from '@/components/home/TrustTicker';
 import { CategoryEcosystem } from '@/components/home/CategoryEcosystem';
@@ -133,7 +134,7 @@ export default async function Home() {
 
   return (
     <SmoothScroll>
-      <main className="bg-[#FAF7F2]">
+      <main className="bg-[#FAF7F2] pb-20 md:pb-0">
         <SiteHeader />
 
         <HeroSection />
@@ -152,6 +153,7 @@ export default async function Home() {
         <FinalCTA />
 
         <SiteFooter />
+        <MobileBottomNav />
       </main>
     </SmoothScroll>
   );

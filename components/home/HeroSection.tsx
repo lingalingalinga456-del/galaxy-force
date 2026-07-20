@@ -54,9 +54,9 @@ export function HeroSection() {
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white text-warm-muted text-sm mb-6 shadow-card">
             <Sparkles className="w-4 h-4 text-warm-red" /> Human Resource Marketplace
           </div>
-          <h1 className="text-heading text-5xl md:text-[64px] font-bold mb-6 leading-[1.1] text-warm-ink">
-            Find Trusted Talent.<br />Build Without Limits.
-          </h1>
+           <h1 className="h1 mb-6 leading-[1.1]">
+             Find Trusted Talent.<br />Build Without Limits.
+           </h1>
           <p className="text-lg text-warm-muted mb-8 max-w-xl">
             Hire real, verified human workers for any job — from electricians to cleaners — across Bangladesh and beyond.
           </p>

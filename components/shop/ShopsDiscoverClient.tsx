@@ -9,6 +9,7 @@ import { Img } from '@/components/home/home-shared';
 import { SearchWithSuggestions } from '@/components/search/SearchWithSuggestions';
 import { SHOP_CATS, buildDemoShops, buildDemoProducts } from '@/lib/shops-data';
 import { SiteHeader, SiteFooter } from '@/components/layout/SiteChrome';
+import { MobileBottomNav } from '@/components/design-system/MobileBottomNav';
 
 type Shop = any;
 type Product = any;
@@ -48,7 +49,7 @@ export function ShopsDiscoverClient({ realShops = [] as Shop[], realProducts = [
   function clearAll() { setCat(''); setSub(''); setQuery(''); setShopsVisible(9); setProdsVisible(16); }
 
   return (
-    <div className="min-h-screen bg-warm-cream">
+    <div className="min-h-screen bg-warm-cream pb-20 md:pb-0">
       <SiteHeader />
       <section className="py-12 md:py-16 bg-gradient-to-b from-warm-cream to-warm-beige">
         <div className="container mx-auto px-4 text-center">
@@ -88,6 +89,7 @@ export function ShopsDiscoverClient({ realShops = [] as Shop[], realProducts = [
       </div>
 
       <SiteFooter />
+      <MobileBottomNav />
     </div>
   );
 }

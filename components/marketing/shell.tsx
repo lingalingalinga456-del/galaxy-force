@@ -1,7 +1,13 @@
 import { SiteHeader, SiteFooter } from '@/components/layout/SiteChrome';
+import { MobileBottomNav } from '@/components/design-system/MobileBottomNav';
 
 export function MarketingHeader() {
-  return <SiteHeader />;
+  return (
+    <>
+      <SiteHeader />
+      <MobileBottomNav />
+    </>
+  );
 }
 
 export function MarketingFooter() {

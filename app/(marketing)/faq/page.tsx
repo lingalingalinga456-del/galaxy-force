@@ -11,11 +11,11 @@ const faqs = [
 
 export default function FaqPage() {
   return (
-    <div className="min-h-screen bg-warm-cream">
+    <div className="min-h-screen bg-warm-cream pb-20 md:pb-0">
       <MarketingHeader />
       <section className="py-16">
         <div className="container mx-auto px-4 max-w-3xl">
-          <h1 className="text-heading text-4xl font-bold mb-8 text-center">Frequently Asked Questions</h1>
+          <h1 className="h1 mb-8 text-center">Frequently Asked Questions</h1>
           <div className="space-y-4">
             {faqs.map((f) => (
               <div key={f.q} className="p-6 rounded-xl bg-white border border-warm-border">

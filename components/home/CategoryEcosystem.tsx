@@ -28,11 +28,11 @@ export function CategoryEcosystem({ categories }: { categories: any[] }) {
       <div className="container mx-auto px-4">
         <SectionTitle kicker="Browse by category" title="Explore the Workforce" sub="Real people for real jobs — trades, services, and local work." />
         <h3 className="text-sm font-semibold text-warm-muted uppercase tracking-wide mb-3">Physical Human Trades</h3>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 mb-8">
           {hrCats.map((cat, idx) => <CategoryCard key={cat.slug} cat={cat} idx={idx} featured />)}
         </div>
         <h3 className="text-sm font-semibold text-warm-muted uppercase tracking-wide mb-3">Local Shops & Services</h3>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
           {otherCats.map((cat, idx) => <CategoryCard key={cat.slug} cat={cat} idx={idx} />)}
           <Link href="/discover" className="flex items-center justify-center rounded-[24px] border-2 border-dashed border-warm-border text-warm-red font-medium hover:bg-warm-beige transition-all">
             Browse All Categories →

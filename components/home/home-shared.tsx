@@ -91,7 +91,7 @@ export function SectionTitle({ kicker, title, sub }: { kicker?: string; title: s
   return (
     <motion.div {...reveal()} className="text-center mb-12">
       {kicker && <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-warm-beige text-warm-muted text-sm mb-3"><Sparkles className="w-4 h-4 text-warm-red" />{kicker}</div>}
-      <h2 className="text-heading text-3xl md:text-4xl font-bold text-warm-ink">{title}</h2>
+      <h2 className="h2">{title}</h2>
       {sub && <p className="text-warm-muted mt-3 max-w-2xl mx-auto">{sub}</p>}
     </motion.div>
   );

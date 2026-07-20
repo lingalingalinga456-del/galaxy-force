@@ -28,7 +28,7 @@ export function FloatingAIAssistant() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2">
+    <div className="fixed bottom-24 right-4 z-50 flex flex-col items-end gap-2 md:bottom-6 md:right-6">
       <div className="w-14 h-14 rounded-full bg-warm-red flex items-center justify-center shadow-xl animate-pulse" onClick={() => setOpen(!open)}>
         <Sparkles className="w-7 h-7 text-white" />
       </div>

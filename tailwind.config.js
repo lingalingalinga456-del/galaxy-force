@@ -7,6 +7,11 @@ module.exports = {
   ],
   theme: {
     extend: {
+      container: {
+        center: true,
+        padding: { DEFAULT: '1rem', md: '1.5rem', xl: '2.5rem' },
+        screens: { '2xl': '1280px' },
+      },
       colors: {
         warm: {
           red: '#D94F4F',

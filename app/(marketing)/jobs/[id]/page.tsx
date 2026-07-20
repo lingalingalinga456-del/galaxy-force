@@ -20,12 +20,12 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
   if (!job) notFound();
 
   return (
-    <div className="min-h-screen bg-warm-cream">
+    <div className="min-h-screen bg-warm-cream pb-20 md:pb-0">
       <MarketingHeader />
       <section className="container mx-auto px-4 py-8 grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
           <Link href="/jobs" className="text-sm text-warm-red hover:underline">← Back to jobs</Link>
-          <h1 className="text-heading text-3xl font-bold mt-4">{job.title}</h1>
+          <h1 className="h1 mt-4">{job.title}</h1>
           <div className="flex flex-wrap gap-2 mt-3">
             <Badge>{job.categories?.name_en}</Badge>
             <Badge variant="outline" className="capitalize">{job.budget_type}</Badge>

@@ -18,12 +18,12 @@ export function AIMatchShowcase() {
       <div className="container mx-auto px-4">
         <SectionTitle kicker="Powered by AI" title="Smart Matching, Made Human" sub="Our AI reads your real needs and surfaces the most trusted workers for the job." />
         <div className="relative max-w-3xl mx-auto" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
-          <motion.div key={i} initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }} className="rounded-[32px] bg-gradient-to-br from-warm-beige to-white border border-warm-gold/30 shadow-card-lift p-8 flex items-center gap-6">
+          <motion.div key={i} initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }} className="rounded-[32px] bg-gradient-to-br from-warm-beige to-white border border-warm-gold/30 shadow-card-lift p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-5 sm:gap-6">
             <div className="w-24 h-24 rounded-full overflow-hidden bg-warm-beige shrink-0"><Img src={it.photo} alt={it.name} className="w-full h-full object-cover" /></div>
-            <div className="flex-1">
+            <div className="flex-1 text-center sm:text-left">
               <div className="text-4xl font-bold text-warm-gold">{it.match}%</div>
               <div className="text-sm text-warm-muted">{it.name} · {it.role}</div>
-              <div className="flex flex-wrap gap-2 mt-3">
+              <div className="flex flex-wrap justify-center sm:justify-start gap-2 mt-3">
                 {it.tags.map((tg: string) => <span key={tg} className="text-xs px-2.5 py-1 rounded-full bg-warm-gold/15 text-warm-ink">{tg}</span>)}
               </div>
             </div>

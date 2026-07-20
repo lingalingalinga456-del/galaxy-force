@@ -32,11 +32,11 @@ const tiers = [
 
 export default function PricingPage() {
   return (
-    <div className="min-h-screen bg-warm-cream">
+    <div className="min-h-screen bg-warm-cream pb-20 md:pb-0">
       <MarketingHeader />
       <section className="py-16">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-heading text-4xl font-bold mb-3">Simple, transparent pricing</h1>
+          <h1 className="h1 mb-3">Simple, transparent pricing</h1>
           <p className="text-warm-muted max-w-xl mx-auto mb-12">Choose the plan that fits your hiring needs. No hidden fees.</p>
           <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {tiers.map((tier) => (

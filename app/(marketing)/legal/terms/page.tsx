@@ -2,11 +2,11 @@ import { MarketingHeader, MarketingFooter } from '@/components/marketing/shell';
 
 export default function TermsPage() {
   return (
-    <div className="min-h-screen bg-warm-cream">
+    <div className="min-h-screen bg-warm-cream pb-20 md:pb-0">
       <MarketingHeader />
       <section className="py-16">
         <div className="container mx-auto px-4 max-w-3xl prose">
-          <h1 className="text-heading text-4xl font-bold mb-6">Terms of Service</h1>
+          <h1 className="h1 mb-6">Terms of Service</h1>
           <p className="text-warm-muted">Last updated: 2026-01-01</p>
           <h2 className="text-2xl font-semibold mt-8 mb-2">1. Acceptance of Terms</h2>
           <p className="text-warm-muted leading-relaxed">By accessing Galaxy Workforce you agree to these terms. If you do not agree, do not use the platform.</p>

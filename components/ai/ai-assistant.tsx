@@ -171,7 +171,7 @@ export function AIAssistant() {
         <button
           onClick={() => setOpen(true)}
           aria-label="Open AI Assistant"
-          className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-full bg-warm-red px-4 py-3 text-white shadow-card-hover transition-transform hover:scale-105"
+          className="fixed bottom-24 right-4 z-50 flex items-center gap-2 rounded-full bg-warm-red px-4 py-3 text-white shadow-card-hover transition-transform hover:scale-105 md:bottom-5 md:right-5"
         >
           <Sparkles className="h-5 w-5" />
           <span className="text-sm font-medium">{t('ai.open', { en: 'AI Assistant', bn: 'AI সহকারী' })}</span>
@@ -179,7 +179,7 @@ export function AIAssistant() {
       )}
 
       {open && (
-        <div className="fixed bottom-5 right-5 z-50 flex h-[560px] max-h-[85vh] w-[380px] max-w-[92vw] flex-col overflow-hidden rounded-2xl border border-warm-border bg-white shadow-card-hover">
+        <div className="fixed bottom-24 right-4 z-50 flex h-[560px] max-h-[85vh] w-[380px] max-w-[92vw] flex-col overflow-hidden rounded-2xl border border-warm-border bg-white shadow-card-hover md:bottom-5 md:right-5">
           {/* Header */}
           <div className="flex items-center justify-between bg-warm-ink px-4 py-3 text-white">
             <div className="flex items-center gap-2">
