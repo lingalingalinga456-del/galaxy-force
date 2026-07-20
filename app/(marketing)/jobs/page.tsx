@@ -2,8 +2,11 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { MarketingHeader, MarketingFooter } from '@/components/marketing/shell';
+import { JobCard } from '@/components/design-system/JobCard';
+import { CategoryChip } from '@/components/design-system/CategoryChip';
+import { MobileBottomNav } from '@/components/design-system/MobileBottomNav';
+import { Plus } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -37,11 +40,15 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
             </div>
           </form>
           <div className="flex flex-wrap gap-2 mt-4">
-            <Link href="/jobs"><Button variant={!category ? 'secondary' : 'ghost'} size="sm">All</Button></Link>
+            <CategoryChip label="All" active={!category} href="/jobs" />
             {(categories || []).map((c: any) => (
-              <Link key={c.slug} href={`/jobs?category=${c.slug}`}>
-                <Button variant={category === c.slug ? 'secondary' : 'ghost'} size="sm">{c.name_en}</Button>
-              </Link>
+              <CategoryChip
+                key={c.slug}
+                label={c.name_en}
+                icon={c.icon}
+                active={category === c.slug}
+                href={`/jobs?category=${c.slug}`}
+              />
             ))}
           </div>
         </div>
@@ -50,35 +57,34 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
       <section className="py-10">
         <div className="container mx-auto px-4 grid gap-4">
           {(jobs || []).map((job: any) => (
-            <Link key={job.id} href={`/jobs/${job.id}`} className="block p-6 rounded-xl bg-white border border-warm-border hover:shadow-card-hover transition-all">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <h3 className="font-semibold text-warm-ink text-lg">{job.title}</h3>
-                  <p className="text-sm text-warm-muted mt-1 line-clamp-2">{job.description}</p>
-                  <div className="flex flex-wrap gap-2 mt-3">
-                    {(job.skills || []).slice(0, 4).map((s: string) => <Badge key={s} variant="outline">{s}</Badge>)}
-                  </div>
-                </div>
-                <div className="text-right shrink-0">
-                  <div className="font-semibold text-warm-ink">
-                    ৳{Number(job.budget_max || job.budget_min || 0).toLocaleString()}
-                  </div>
-                  <div className="text-xs text-warm-muted capitalize">{job.budget_type}</div>
-                </div>
-              </div>
-              <div className="mt-3 text-xs text-warm-muted">
-                Posted by {job.profiles?.full_name} · {job.categories?.name_en} · {job.experience_level}
-              </div>
-            </Link>
+            <JobCard
+              key={job.id}
+              job={{
+                id: job.id,
+                title: job.title,
+                clientName: job.profiles?.full_name,
+                budgetType: job.budget_type,
+                budget: Number(job.budget_max || job.budget_min || 0),
+                location: job.categories?.name_en,
+                postedAt: new Date(job.created_at).toLocaleDateString(),
+              }}
+            />
           ))}
           {(!jobs || jobs.length === 0) && (
-            <div className="text-center py-12 text-warm-muted">
-              No jobs found. Try a different search.
-            </div>
+            <div className="text-center py-12 text-warm-muted">No jobs found. Try a different search.</div>
           )}
         </div>
       </section>
+
+      {/* Floating Post a Job button */}
+      <Link href="/client/jobs/new" className="fixed bottom-20 right-6 z-40 lg:bottom-8">
+        <Button size="lg" className="rounded-full shadow-card-lift gap-2">
+          <Plus className="w-5 h-5" /> Post a Job
+        </Button>
+      </Link>
+
       <MarketingFooter />
+      <MobileBottomNav />
     </div>
   );
 }

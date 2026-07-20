@@ -2,6 +2,9 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { WorkerCard } from '@/components/design-system/WorkerCard';
+import { CategoryChip } from '@/components/design-system/CategoryChip';
+import { MobileBottomNav } from '@/components/design-system/MobileBottomNav';
 
 export const dynamic = 'force-dynamic';
 
@@ -73,16 +76,6 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Pro
     console.error('Error fetching discover data:', e);
   }
 
-  const badgeFor = (t: any) => {
-    const b: string[] = [];
-    if (t.profiles?.is_verified) b.push('Verified');
-    if (t.worker_meta?.emergencyAvailable) b.push('Emergency');
-    if ((t.completion_score || 0) >= 80) b.push('Top Rated');
-    if ((t.worker_meta?.experienceYears || 0) >= 5) b.push('Experienced');
-    if (t.worker_meta?.ownTools) b.push('Has Tools');
-    return b.slice(0, 3);
-  };
-
   return (
     <div className="min-h-screen bg-warm-cream">
       <header className="border-b border-warm-border bg-white">
@@ -146,13 +139,15 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Pro
       <section className="py-8 bg-warm-beige">
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap gap-2 justify-center">
-            <Link href="/discover"><Button variant="ghost" size="sm" className={!categorySlug ? 'bg-white' : ''}>All</Button></Link>
+            <CategoryChip label="All" active={!categorySlug} href="/discover" />
             {categories.map(cat => (
-              <Link key={cat.slug} href={`/discover?category=${cat.slug}`}>
-                <Button variant="ghost" size="sm" className={categorySlug === cat.slug ? 'bg-white' : ''}>
-                  <span className="mr-1">{cat.icon}</span>{cat.name_en}
-                </Button>
-              </Link>
+              <CategoryChip
+                key={cat.slug}
+                label={cat.name_en}
+                icon={cat.icon}
+                active={categorySlug === cat.slug}
+                href={`/discover?category=${cat.slug}`}
+              />
             ))}
           </div>
         </div>
@@ -178,36 +173,25 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Pro
           )}
 
           {activeView !== 'shops' && (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="flex flex-wrap gap-6 justify-center md:justify-start">
               {talentProfiles.map((talent: any) => (
-                <div key={talent.profiles?.id} className="p-6 rounded-card bg-white border border-warm-border shadow-card hover:shadow-card-hover transition-all">
-                  <div className="flex items-start gap-4 mb-3">
-                    <div className="w-14 h-14 rounded-full bg-warm-beige flex items-center justify-center text-warm-ink font-bold text-lg">
-                      {talent.profiles?.full_name?.charAt(0) || 'W'}
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-warm-ink">{talent.profiles?.full_name}</h3>
-                      <p className="text-sm text-warm-muted">{talent.headline || talent.primary_occupation || 'Skilled worker'}</p>
-                      <div className="flex items-center gap-2 mt-1 text-xs">
-                        {talent.worker_status === 'available' || talent.worker_status === 'emergency_only'
-                          ? <span className="text-warm-green font-medium">● Available now</span>
-                          : <span className="text-warm-muted">○ {talent.worker_status?.replace('_', ' ') || 'Busy'}</span>}
-                        {(talent.worker_meta?.experienceYears || 0) > 0 && <span className="text-warm-muted">· {talent.worker_meta?.experienceYears}y exp</span>}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex flex-wrap gap-1.5 mb-3">
-                    {badgeFor(talent).map((b) => (
-                      <span key={b} className="px-2 py-0.5 text-xs rounded-full bg-warm-cream text-warm-ink border border-warm-border">{b}</span>
-                    ))}
-                  </div>
-                  <div className="flex items-center justify-between">
-                    {talent.hourly_rate > 0 && <span className="text-sm font-semibold text-warm-red">৳{Number(talent.hourly_rate).toLocaleString()}/hr</span>}
-                    <Link href={`/talent/${talent.profiles?.username || talent.profiles?.id}`} className="ml-auto">
-                      <Button size="sm" variant="secondary">View Profile</Button>
-                    </Link>
-                  </div>
-                </div>
+                <WorkerCard
+                  key={talent.profiles?.id}
+                  worker={{
+                    id: talent.profiles?.id,
+                    username: talent.profiles?.username,
+                    name: talent.profiles?.full_name || 'Worker',
+                    headline: talent.headline,
+                    primaryOccupation: talent.primary_occupation || talent.headline,
+                    location: talent.worker_meta?.baseLocation || 'Bangladesh',
+                    hourlyRate: Number(talent.hourly_rate || 0),
+                    completedJobs: Number(talent.completion_score || 0),
+                    trustScore: Number(talent.completion_score || 0),
+                    verified: !!talent.profiles?.is_verified,
+                    status: talent.worker_status === 'available' || talent.worker_status === 'emergency_only' ? 'active' : 'busy',
+                    skills: talent.skills || [],
+                  }}
+                />
               ))}
               {!talentProfiles.length && (
                 <div className="col-span-full text-center py-12">
@@ -266,6 +250,7 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Pro
         </div>
         <div className="container mx-auto px-4 mt-8 pt-8 border-t border-white/10 text-center text-sm text-white/50">© 2026 Galaxy Workforce</div>
       </footer>
+      <MobileBottomNav />
     </div>
   );
 }
