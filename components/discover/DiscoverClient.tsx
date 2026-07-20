@@ -1,6 +1,6 @@
 ﻿'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -115,7 +115,7 @@ export function DiscoverClient({ categories, realWorkers, realTeams, realShops, 
 
       {/* View Type Toggle */}
       <section className="border-y border-warm-border bg-white sticky top-[64px] z-30">
-        <div className="container mx-auto px-4 flex gap-2 overflow-x-auto py-3">
+        <div className="container mx-auto px-4 flex gap-2 overflow-x-auto py-3 flex-nowrap justify-center">
           {[['all','All Entities'],['individual','Individuals'],['team','Teams'],['shop','Shops'],['business','Businesses']].map(([v, label]) => (
             <button key={v} onClick={() => sync({ type: v === 'all' ? '' : v })} className={`whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-medium transition-all ${type === v ? 'bg-warm-red text-white' : 'bg-warm-cream text-warm-muted hover:text-warm-red'}`}>{label}</button>
           ))}
@@ -123,22 +123,14 @@ export function DiscoverClient({ categories, realWorkers, realTeams, realShops, 
       </section>
 
       {/* Category Canvas */}
-      <section className="py-6 bg-warm-beige/60">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-wrap gap-2 justify-center">
-            <button onClick={() => sync({ category: '', situation: '' })} className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm border transition-all ${!category && !situation ? 'bg-warm-red text-white border-warm-red' : 'bg-white text-warm-ink border-warm-border hover:border-warm-red hover:text-warm-red'}`}>All</button>
-            {TRADES_ORDER.map((slug) => {
-              const c = categories.find((x: any) => x.slug === slug);
-              return <button key={slug} onClick={() => sync({ category: slug, situation: '' })} className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm border transition-all ${category === slug ? 'bg-warm-red text-white border-warm-red' : 'bg-white text-warm-ink border-warm-border hover:border-warm-red hover:text-warm-red'}`}>{c?.icon || '🔧'} {c?.name_en || pretty(slug)}</button>;
-            })}
-          </div>
-          <div className="flex flex-wrap gap-2 justify-center mt-3">
-            {SITUATIONS_LIST.map((s) => (
-              <button key={s.slug} onClick={() => sync({ situation: s.slug, category: '' })} className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm border transition-all ${situation === s.slug ? 'bg-warm-gold text-warm-ink border-warm-gold' : 'bg-white text-warm-ink border-warm-border hover:border-warm-gold hover:text-warm-ink'}`}>{s.icon} {s.label}</button>
-            ))}
-          </div>
-        </div>
-      </section>
+      <CategoryCanvas
+        activeCategory={category}
+        activeSituation={situation}
+        onPickCategory={(slug: string) => sync({ category: slug, situation: '' })}
+        onPickSub={(sub: string) => sync({ q: sub, category: '', situation: '' })}
+        onClear={() => sync({ category: '', situation: '' })}
+        onPickSituation={(slug: string) => sync({ situation: slug, category: '' })}
+      />
 
       {/* Body */}
       <section className="py-10">
@@ -215,16 +207,34 @@ export function DiscoverClient({ categories, realWorkers, realTeams, realShops, 
 }
 
 // ---- data refs ----
-import { TRADES, SITUATIONS, buildDemoWorkers, buildDemoTeams, buildDemoShops, buildDemoProducts } from '@/lib/discover-data';
-const TRADES_ORDER = TRADES;
+import { SITUATIONS, buildDemoWorkers, buildDemoTeams, buildDemoShops, buildDemoProducts } from '@/lib/discover-data';
 const SITUATIONS_LIST = SITUATIONS;
 
-function pretty(slug: string) { return slug.split('-').map((w) => w[0].toUpperCase() + w.slice(1)).join(' '); }
+type MainCat = { slug: string; emoji: string; name: string; trades: string[]; subcategories: string[]; priority: 'High' | 'Medium' | 'Low' };
+const MAIN_CATS: MainCat[] = [
+  { slug: 'skilled-trades', emoji: '🔧', name: 'Skilled Trades', trades: ['skilled-trades', 'repair-maintenance'], subcategories: ['Electrician', 'Plumber', 'Carpenter', 'Welder', 'Mason', 'Tile Setter', 'Painter'], priority: 'High' },
+  { slug: 'home-services', emoji: '🏠', name: 'Home Services', trades: ['home-services'], subcategories: ['House Cleaning', 'AC Repair', 'Deep Cleaning', 'Appliance Repair', 'Pest Control', 'Gardening'], priority: 'High' },
+  { slug: 'automotive-repair', emoji: '🚗', name: 'Automotive & Repair', trades: ['automotive'], subcategories: ['Car Mechanic', 'Bike Mechanic', 'Battery Replacement', 'Tyre Service', 'Towing', 'Car Wash'], priority: 'High' },
+  { slug: 'construction-renovation', emoji: '🏗️', name: 'Construction & Renovation', trades: ['construction', 'manufacturing'], subcategories: ['General Construction', 'Interior Renovation', 'Flooring', 'Roofing', 'Electrical Work', 'Plumbing Work'], priority: 'High' },
+  { slug: 'transportation-moving', emoji: '🚚', name: 'Transportation & Moving', trades: ['transportation'], subcategories: ['Car Driver', 'Truck Driver', 'House Moving', 'Office Shifting', 'Delivery', 'Logistics'], priority: 'High' },
+  { slug: 'security-safety', emoji: '🛡️', name: 'Security & Safety', trades: ['security'], subcategories: ['Security Guard', 'CCTV Installation', 'Locksmith', 'Fire Safety', 'Alarm System'], priority: 'Medium' },
+  { slug: 'professional-services', emoji: '💼', name: 'Professional Services', trades: ['professional-services', 'business-services'], subcategories: ['Accountant', 'Lawyer', 'Business Consultant', 'HR Consultant', 'Tax Advisor'], priority: 'Medium' },
+  { slug: 'education-tutoring', emoji: '📚', name: 'Education & Tutoring', trades: ['education'], subcategories: ['Home Tutor', 'Online Tutor', 'Exam Coaching', 'Language Teacher', 'Music Teacher'], priority: 'Medium' },
+  { slug: 'healthcare-wellness', emoji: '⚕️', name: 'Healthcare & Wellness', trades: ['healthcare', 'beauty-wellness'], subcategories: ['Home Nurse', 'Caregiver', 'Physiotherapist', 'Massage Therapist', 'Yoga Trainer'], priority: 'Medium' },
+  { slug: 'hospitality-events', emoji: '🍽️', name: 'Hospitality & Events', trades: ['hospitality', 'event-services'], subcategories: ['Event Staff', 'Catering', 'Wedding Services', 'Bartender', 'Event Photographer'], priority: 'Low' },
+  { slug: 'retail-local-shops', emoji: '🛍️', name: 'Retail & Local Shops', trades: ['retail', 'agriculture'], subcategories: ['Hardware Store', 'Auto Parts', 'Electrical Parts', 'Tools & Equipment', 'Building Materials'], priority: 'Medium' },
+  { slug: 'emergency-services', emoji: '🚨', name: 'Emergency Services', trades: ['skilled-trades', 'automotive', 'security'], subcategories: ['Emergency Plumber', 'Emergency Electrician', 'Emergency Mechanic', 'Urgent Locksmith', '24/7 Towing'], priority: 'High' },
+];
+
 function matchesText(hay: string, q: string) { if (!q) return true; return hay.toLowerCase().includes(q.toLowerCase()); }
 
 function filterWorkers(list: any[], f: any) {
   let r = list;
-  if (f.category) r = r.filter((w: any) => w.category === f.category);
+  if (f.category) {
+    const mc = MAIN_CATS.find((c) => c.slug === f.category);
+    const trades = mc ? mc.trades : [f.category];
+    r = r.filter((w: any) => trades.includes(w.category));
+  }
   if (f.situation && f.q) r = r.filter((w: any) => matchesText(w.role + ' ' + (w.skills || []).join(' '), f.q));
   if (f.q) r = r.filter((w: any) => matchesText(w.name + ' ' + w.role + ' ' + (w.skills || []).join(' '), f.q));
   if (f.avail !== 'all') r = r.filter((w: any) => (w.availability || '').toLowerCase().includes(f.avail === 'available' ? 'available' : f.avail === 'emergency' ? 'emergency' : f.avail === 'appointment' ? 'appt' : 'busy'));
@@ -245,6 +255,82 @@ function mergeDemoWorkers() { try { return buildDemoWorkers(); } catch { return 
 function mergeDemoTeams() { try { return buildDemoTeams(); } catch { return []; } }
 function mergeDemoShops() { try { return buildDemoShops(); } catch { return []; } }
 function mergeDemoProducts() { try { return buildDemoProducts(); } catch { return []; } }
+
+// ---- Category Canvas (v2.2: 12 main cats + hover/tap subcategories) ----
+function CategoryCanvas({ activeCategory, activeSituation, onPickCategory, onPickSub, onClear, onPickSituation }: any) {
+  const [hovered, setHovered] = useState<string | null>(null);
+  const [tapped, setTapped] = useState<string | null>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const open = (slug: string) => { if (closeTimer.current) clearTimeout(closeTimer.current); setHovered(slug); };
+  const scheduleClose = () => { if (closeTimer.current) clearTimeout(closeTimer.current); closeTimer.current = setTimeout(() => setHovered(null), 120); };
+
+  const isActive = (slug: string) => activeCategory === slug || (hovered === slug) || (tapped === slug);
+
+  return (
+    <section className="py-6 bg-warm-beige/60">
+      <div className="container mx-auto px-4">
+        <div className="flex flex-wrap gap-2 justify-center">
+          <button
+            onMouseEnter={() => open('')}
+            onClick={onClear}
+            className={`relative z-10 inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm border transition-all ${!activeCategory && !activeSituation ? 'bg-warm-red text-white border-warm-red' : 'bg-white text-warm-ink border-warm-border hover:border-warm-red hover:text-warm-red'}`}
+          >All</button>
+          {MAIN_CATS.map((cat) => {
+            const active = isActive(cat.slug);
+            return (
+              <div key={cat.slug} className="relative" onMouseEnter={() => open(cat.slug)} onMouseLeave={scheduleClose}>
+                <button
+                  onClick={() => { onPickCategory(cat.slug); setTapped(null); }}
+                  className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm border transition-all ${activeCategory === cat.slug ? 'bg-warm-red text-white border-warm-red' : 'bg-white text-warm-ink border-warm-border hover:border-warm-red hover:text-warm-red'}`}
+                >
+                  <span>{cat.emoji}</span> {cat.name}
+                </button>
+                {/* Subcategory popover (hover desktop / tap mobile) */}
+                {active && cat.subcategories.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute left-1/2 -translate-x-1/2 top-full mt-2 z-50 w-60 rounded-2xl bg-white border border-warm-border shadow-card-lift p-3"
+                    onMouseEnter={() => open(cat.slug)}
+                    onMouseLeave={scheduleClose}
+                  >
+                    <div className="text-xs font-semibold text-warm-muted mb-2 px-1">{cat.name} · Subcategories</div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {cat.subcategories.map((sub) => (
+                        <button
+                          key={sub}
+                          onClick={() => { onPickSub(sub); setTapped(null); setHovered(null); }}
+                          className="text-xs px-2.5 py-1 rounded-full border border-warm-border bg-warm-cream text-warm-ink hover:border-warm-gold hover:bg-warm-beige transition-colors"
+                        >{sub}</button>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Mobile tap expansion */}
+        {tapped && (
+          <div className="lg:hidden mt-3 flex flex-wrap gap-1.5 justify-center">
+            {MAIN_CATS.find((c) => c.slug === tapped)?.subcategories.map((sub) => (
+              <button key={sub} onClick={() => { onPickSub(sub); setTapped(null); }} className="text-xs px-2.5 py-1 rounded-full border border-warm-border bg-white text-warm-ink hover:border-warm-gold">{sub}</button>
+            ))}
+          </div>
+        )}
+
+        <div className="flex flex-wrap gap-2 justify-center mt-3">
+          {SITUATIONS_LIST.map((s) => (
+            <button key={s.slug} onClick={() => { onPickSituation(s.slug); setTapped(null); }} className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm border transition-all ${activeSituation === s.slug ? 'bg-warm-gold text-warm-ink border-warm-gold' : 'bg-white text-warm-ink border-warm-border hover:border-warm-gold hover:text-warm-ink'}`}>{s.icon} {s.label}</button>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 
 // ---- Header / Footer ----
 function DiscoverHeader() {
