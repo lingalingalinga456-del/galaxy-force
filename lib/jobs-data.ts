@@ -40,6 +40,11 @@ const TITLES = [
   ['Bike mechanic for servicing', 'automotive-repair', 'Bike Mechanic', 'One-time', 'fixed'],
   ['Yoga trainer home sessions', 'healthcare-wellness', 'Yoga Trainer', 'Weekly', 'hourly'],
   ['Hardware store restocking', 'retail-local-shops', 'Hardware Store', 'One-time', 'fixed'],
+  ['Solar panel cleaning', 'home-services', 'Gardening', 'Weekly', 'fixed'],
+  ['Plumbing for new bathroom', 'skilled-trades', 'Plumber', 'One-time', 'fixed'],
+  ['Office IT setup & cabling', 'professional-services', 'Business Consultant', 'One-time', 'fixed'],
+  ['Childcare helper needed', 'healthcare-wellness', 'Caregiver', 'Daily', 'hourly'],
+  ['Generator repair urgent', 'skilled-trades', 'Welder', 'Emergency', 'fixed'],
 ];
 
 export function buildDemoJobs(): any[] {
