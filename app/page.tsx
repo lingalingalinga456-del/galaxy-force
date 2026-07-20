@@ -1,5 +1,22 @@
+import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
-import HomeContent from '@/components/home/HomeContent';
+import { Sparkles } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { SmoothScroll } from '@/components/home/SmoothScroll';
+import { HeroSection } from '@/components/home/HeroSection';
+import { TrustTicker } from '@/components/home/TrustTicker';
+import { CategoryEcosystem } from '@/components/home/CategoryEcosystem';
+import { HowItWorks } from '@/components/home/HowItWorks';
+import { AIMatchShowcase } from '@/components/home/AIMatchShowcase';
+import { FeaturedWorkers } from '@/components/home/FeaturedWorkers';
+import { LocalShopsSection } from '@/components/home/LocalShopsSection';
+import { BeforeAfterSlider } from '@/components/home/BeforeAfterSlider';
+import { ActivityTicker } from '@/components/home/ActivityTicker';
+import { SuccessStories } from '@/components/home/SuccessStories';
+import { WhyGalaxy } from '@/components/home/WhyGalaxy';
+import { PricingPreview } from '@/components/home/PricingPreview';
+import { FAQ } from '@/components/home/FAQ';
+import { FinalCTA } from '@/components/home/FinalCTA';
 
 export const dynamic = 'force-dynamic';
 
@@ -69,6 +86,7 @@ export default async function Home() {
       verified: !!t.profiles?.is_verified,
       rate: Number(t.hourly_rate || 0) || 400,
       jobs: Math.round(Number(t.completion_score || 0) * 10),
+      location: 'Bangladesh',
       availability: t.worker_status === 'available' || t.worker_status === 'emergency_only' ? 'Available' : 'Busy',
       match: Math.min(98, Math.round(80 + (Number(t.completion_score || 0)))),
     }));
@@ -79,12 +97,7 @@ export default async function Home() {
       supabase.from('contracts').select('*', { count: 'exact', head: true }).eq('status', 'completed'),
     ]);
 
-    stats = {
-      verifiedWorkers: verifiedWorkers ?? 0,
-      companies: companies ?? 0,
-      jobsCompleted: jobsCompleted ?? 0,
-      avgRating: 4.9,
-    };
+    stats = { verifiedWorkers: verifiedWorkers ?? 0, companies: companies ?? 0, jobsCompleted: jobsCompleted ?? 0, avgRating: 4.9 };
 
     const { data: shopRows } = await supabase
       .from('shop_profiles')
@@ -120,5 +133,61 @@ export default async function Home() {
 
   if (!categories.length) categories = fallbackCategories;
 
-  return <HomeContent categories={categories} stats={stats} featuredWorkers={featuredWorkers} activity={activity} shops={shops} products={products} />;
+  return (
+    <SmoothScroll>
+      <main className="bg-[#FAF7F2]">
+        <header className="sticky top-0 z-50 border-b border-warm-border bg-white/80 backdrop-blur-sm">
+          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+            <Link href="/" className="flex items-center gap-2">
+              <div className="w-10 h-10 rounded-xl bg-warm-red flex items-center justify-center"><Sparkles className="w-6 h-6 text-white" /></div>
+              <span className="text-heading text-xl font-bold">Galaxy Workforce</span>
+            </Link>
+            <nav className="hidden md:flex items-center gap-6 text-sm">
+              <Link href="/discover" className="hover:text-warm-red">Discover</Link>
+              <Link href="/jobs" className="hover:text-warm-red">Find Work</Link>
+              <Link href="/discover?tab=shops" className="hover:text-warm-red">Shops</Link>
+              <Link href="/pricing" className="hover:text-warm-red">Pricing</Link>
+              <Link href="/about" className="hover:text-warm-red">About</Link>
+              <Link href="/faq" className="hover:text-warm-red">FAQ</Link>
+            </nav>
+            <div className="flex items-center gap-3">
+              <Link href="/login"><Button variant="ghost" size="sm">Sign in</Button></Link>
+              <Link href="/register"><Button size="sm">Get Started</Button></Link>
+            </div>
+          </div>
+        </header>
+
+        <HeroSection />
+        <TrustTicker stats={stats} />
+        <CategoryEcosystem categories={categories} />
+        <HowItWorks />
+        <AIMatchShowcase />
+        <FeaturedWorkers workers={featuredWorkers} />
+        <LocalShopsSection shops={shops} products={products} />
+        <BeforeAfterSlider />
+        <ActivityTicker activity={activity} />
+        <SuccessStories />
+        <WhyGalaxy />
+        <PricingPreview />
+        <FAQ />
+        <FinalCTA />
+
+        <footer className="bg-warm-ink text-white py-12">
+          <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 rounded-lg bg-warm-red flex items-center justify-center"><Sparkles className="w-5 h-5 text-white" /></div>
+                <span className="text-heading text-lg font-bold">Galaxy Workforce</span>
+              </div>
+              <p className="text-sm text-white/70">AI-powered human workforce marketplace for Bangladesh and beyond.</p>
+            </div>
+            <div><h3 className="font-semibold mb-4">Product</h3><ul className="space-y-2 text-sm text-white/70"><li><Link href="/discover" className="hover:text-white">Discover</Link></li><li><Link href="/jobs" className="hover:text-white">Find Work</Link></li><li><Link href="/discover?tab=shops" className="hover:text-white">Shops</Link></li><li><Link href="/pricing" className="hover:text-white">Pricing</Link></li></ul></div>
+            <div><h3 className="font-semibold mb-4">Support</h3><ul className="space-y-2 text-sm text-white/70"><li><Link href="/faq" className="hover:text-white">FAQ</Link></li><li><Link href="/legal/terms" className="hover:text-white">Terms</Link></li><li><Link href="/legal/privacy" className="hover:text-white">Privacy</Link></li></ul></div>
+            <div><h3 className="font-semibold mb-4">Contact</h3><ul className="space-y-2 text-sm text-white/70"><li>support@galaxyworkforce.com</li><li>Dhaka, Bangladesh</li></ul></div>
+          </div>
+          <div className="container mx-auto px-4 mt-8 pt-8 border-t border-white/10 text-center text-sm text-white/50">© 2026 Galaxy Workforce. All rights reserved.</div>
+        </footer>
+      </main>
+    </SmoothScroll>
+  );
 }
