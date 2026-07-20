@@ -3,10 +3,18 @@ import { createClient } from '@/lib/supabase/server';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { WorkerCard } from '@/components/design-system/WorkerCard';
+import { TeamCard } from '@/components/design-system/TeamCard';
 import { CategoryChip } from '@/components/design-system/CategoryChip';
 import { MobileBottomNav } from '@/components/design-system/MobileBottomNav';
+import { SectionTitle } from '@/components/design-system/SectionTitle';
 
 export const dynamic = 'force-dynamic';
+
+const SAMPLE_TEAMS = [
+  { id: 't1', name: 'Dhaka Movers Collective', leaderName: 'Karim Uddin', memberCount: 6, rating: 4.8, location: 'Dhaka', category: 'Moving' },
+  { id: 't2', name: 'Elite Paint Crew', leaderName: 'Sabbir H.', memberCount: 4, rating: 4.7, location: 'Gulshan', category: 'Painting' },
+  { id: 't3', name: 'Pro Electrical Team', leaderName: 'Rana A.', memberCount: 5, rating: 4.9, location: 'Dhanmondi', category: 'Electrical' },
+];
 
 const SITUATIONS = [
   { label: 'Emergency Repairs', q: 'emergency electrical repair', icon: '🚨' },
@@ -216,8 +224,42 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Pro
               </div>
             </div>
           )}
+
+          {activeView === 'teams' && (
+            <div className="flex flex-wrap gap-6">
+              {SAMPLE_TEAMS.map((t) => (
+                <TeamCard key={t.id} team={t} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
+
+      {/* Recently Viewed Talent */}
+      {talentProfiles.length > 0 && activeView !== 'shops' && activeView !== 'teams' && (
+        <section className="py-10 bg-warm-beige">
+          <div className="container mx-auto px-4">
+            <SectionTitle>Recently Viewed Talent</SectionTitle>
+            <div className="flex gap-6 overflow-x-auto pb-2">
+              {talentProfiles.slice(0, 6).map((talent: any) => (
+                <WorkerCard
+                  key={`rv-${talent.profiles?.id}`}
+                  worker={{
+                    id: talent.profiles?.id,
+                    username: talent.profiles?.username,
+                    name: talent.profiles?.full_name || 'Worker',
+                    primaryOccupation: talent.primary_occupation || talent.headline,
+                    hourlyRate: Number(talent.hourly_rate || 0),
+                    trustScore: Number(talent.completion_score || 0),
+                    verified: !!talent.profiles?.is_verified,
+                    status: 'active',
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       <footer className="bg-warm-ink text-white py-12">
         <div className="container mx-auto px-4 grid md:grid-cols-3 gap-8">

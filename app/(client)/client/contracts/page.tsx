@@ -2,8 +2,20 @@ import { createClient } from '@/lib/supabase/server';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { HourlyJobTimer } from '@/components/contracts/hourly-job-timer';
+import { OfflineLifecycle } from '@/components/design-system/OfflineLifecycle';
+import { EscrowIndicator } from '@/components/design-system/EscrowIndicator';
+import { WarrantyBadge } from '@/components/design-system/WarrantyBadge';
+import { SectionTitle } from '@/components/design-system/SectionTitle';
 
 export const dynamic = 'force-dynamic';
+
+const STATUS_TO_STEP: Record<string, any> = {
+  active: 'started',
+  completed: 'completed',
+  awaiting_approval: 'inspection',
+  cancelled: 'booked',
+  disputed: 'inspection',
+};
 
 export default async function ClientContractsPage() {
   const supabase = await createClient();
@@ -17,9 +29,9 @@ export default async function ClientContractsPage() {
     .order('created_at', { ascending: false });
 
   return (
-    <div className="p-6 lg:p-8">
-      <h1 className="text-2xl font-bold text-warm-ink mb-6">Contracts</h1>
-      <div className="grid gap-4">
+    <div className="p-6 lg:p-8 space-y-6">
+      <h1 className="text-heading text-2xl font-bold text-warm-ink">Contracts</h1>
+      <div className="grid gap-6">
         {contracts?.map((c: any) => (
           <Card key={c.id} className="p-6">
             <div className="flex items-start justify-between">
@@ -32,11 +44,23 @@ export default async function ClientContractsPage() {
                 <Badge variant="outline" className="mt-1 capitalize">{c.status}</Badge>
               </div>
             </div>
-            {c.budget_type === 'hourly' && (
-              <div className="mt-4">
-                <HourlyJobTimer contractId={c.id} hourlyRate={Number(c.hourly_rate || 0)} isClient />
+
+            <div className="grid md:grid-cols-2 gap-6 mt-6">
+              <div>
+                <SectionTitle>Job Lifecycle</SectionTitle>
+                <OfflineLifecycle current={STATUS_TO_STEP[c.status] || 'booked'} />
               </div>
-            )}
+              <div className="space-y-4">
+                <EscrowIndicator percent={90} />
+                <div className="flex items-center gap-3">
+                  <span className="text-sm text-warm-muted">Warranty:</span>
+                  <WarrantyBadge days={15} />
+                </div>
+                {c.budget_type === 'hourly' && (
+                  <HourlyJobTimer contractId={c.id} hourlyRate={Number(c.hourly_rate || 0)} isClient />
+                )}
+              </div>
+            </div>
           </Card>
         ))}
         {!contracts?.length && <p className="text-warm-muted">No contracts yet.</p>}
