@@ -20,8 +20,10 @@ const QUICK = [
 export function FindWorkClient({ realJobs = [] as Job[] }) {
   const demo = useMemo(() => buildDemoJobs(), []);
   const jobs: Job[] = useMemo(() => {
-    const merged = realJobs && realJobs.length ? realJobs : demo;
-    return merged;
+    const real = Array.isArray(realJobs) ? realJobs : [];
+    if (!real.length) return demo;
+    if (real.length >= 25) return real;
+    return [...real, ...demo.slice(0, 25 - real.length)];
   }, [realJobs, demo]);
 
   const [query, setQuery] = useState('');
