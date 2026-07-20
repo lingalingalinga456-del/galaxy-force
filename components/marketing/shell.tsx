@@ -16,6 +16,7 @@ export function MarketingHeader() {
         <nav className="hidden md:flex items-center gap-6 text-sm">
           <Link href="/discover" className="hover:text-warm-red">Discover Talent</Link>
           <Link href="/jobs" className="hover:text-warm-red">Find Work</Link>
+          <Link href="/shops" className="hover:text-warm-red">Shops</Link>
           <Link href="/pricing" className="hover:text-warm-red">Pricing</Link>
           <Link href="/about" className="hover:text-warm-red">About</Link>
           <Link href="/faq" className="hover:text-warm-red">FAQ</Link>
@@ -48,6 +49,7 @@ export function MarketingFooter() {
           <ul className="space-y-2 text-sm text-white/70">
             <li><Link href="/discover" className="hover:text-white">Discover Talent</Link></li>
             <li><Link href="/jobs" className="hover:text-white">Find Work</Link></li>
+            <li><Link href="/shops" className="hover:text-white">Shops</Link></li>
             <li><Link href="/pricing" className="hover:text-white">Pricing</Link></li>
           </ul>
         </div>

@@ -145,7 +145,7 @@ export default async function Home() {
             <nav className="hidden md:flex items-center gap-6 text-sm">
               <Link href="/discover" className="hover:text-warm-red">Discover</Link>
               <Link href="/jobs" className="hover:text-warm-red">Find Work</Link>
-              <Link href="/discover?tab=shops" className="hover:text-warm-red">Shops</Link>
+              <Link href="/shops" className="hover:text-warm-red">Shops</Link>
               <Link href="/pricing" className="hover:text-warm-red">Pricing</Link>
               <Link href="/about" className="hover:text-warm-red">About</Link>
               <Link href="/faq" className="hover:text-warm-red">FAQ</Link>
@@ -181,7 +181,7 @@ export default async function Home() {
               </div>
               <p className="text-sm text-white/70">AI-powered human workforce marketplace for Bangladesh and beyond.</p>
             </div>
-            <div><h3 className="font-semibold mb-4">Product</h3><ul className="space-y-2 text-sm text-white/70"><li><Link href="/discover" className="hover:text-white">Discover</Link></li><li><Link href="/jobs" className="hover:text-white">Find Work</Link></li><li><Link href="/discover?tab=shops" className="hover:text-white">Shops</Link></li><li><Link href="/pricing" className="hover:text-white">Pricing</Link></li></ul></div>
+            <div><h3 className="font-semibold mb-4">Product</h3><ul className="space-y-2 text-sm text-white/70"><li><Link href="/discover" className="hover:text-white">Discover</Link></li><li><Link href="/jobs" className="hover:text-white">Find Work</Link></li><li><Link href="/shops" className="hover:text-white">Shops</Link></li><li><Link href="/pricing" className="hover:text-white">Pricing</Link></li></ul></div>
             <div><h3 className="font-semibold mb-4">Support</h3><ul className="space-y-2 text-sm text-white/70"><li><Link href="/faq" className="hover:text-white">FAQ</Link></li><li><Link href="/legal/terms" className="hover:text-white">Terms</Link></li><li><Link href="/legal/privacy" className="hover:text-white">Privacy</Link></li></ul></div>
             <div><h3 className="font-semibold mb-4">Contact</h3><ul className="space-y-2 text-sm text-white/70"><li>support@galaxyworkforce.com</li><li>Dhaka, Bangladesh</li></ul></div>
           </div>

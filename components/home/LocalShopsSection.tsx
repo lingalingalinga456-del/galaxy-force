@@ -9,7 +9,7 @@ import { SectionTitle, reveal, Img, SHOPS, PRODUCTS } from './home-shared';
 function ShopCardMini({ s, idx = 0 }: { s: any; idx?: number }) {
   return (
     <motion.div {...reveal((idx % 3) * 0.06)} className="group">
-      <Link href="/discover?tab=shops">
+<Link href="/shops">
         <div className="rounded-[24px] bg-white border border-warm-border shadow-card hover:shadow-card-lift transition-all duration-200 hover:scale-[1.02] overflow-hidden">
           <div className="h-28 bg-gradient-to-br from-warm-beige to-warm-cream relative overflow-hidden">
             {s.banner ? <Img src={s.banner} alt={s.name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center"><Store className="w-8 h-8 text-warm-red/30" /></div>}
@@ -65,7 +65,7 @@ export function LocalShopsSection({ shops, products }: { shops?: any[]; products
           </div>
         </div>
 
-        <div className="text-center mt-8"><Link href="/discover?tab=shops"><Button size="lg" className="gap-2">Browse All Shops & Products <ArrowRight className="w-4 h-4" /></Button></Link></div>
+        <div className="text-center mt-8"><Link href="/shops"><Button size="lg" className="gap-2">Browse All Shops & Products <ArrowRight className="w-4 h-4" /></Button></Link></div>
       </div>
     </section>
   );

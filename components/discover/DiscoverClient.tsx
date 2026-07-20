@@ -414,7 +414,7 @@ function TeamResultCard({ t, idx = 0 }: { t: any; idx?: number }) {
 function ShopResultCard({ s, idx = 0 }: { s: any; idx?: number }) {
   return (
     <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: (idx % 3) * 0.05 }} className="group">
-      <Link href="/discover?tab=shops" className="block">
+      <Link href="/shops" className="block">
         <div className="rounded-[28px] bg-white border border-warm-border shadow-card hover:shadow-card-lift transition-all duration-200 hover:scale-[1.02] overflow-hidden">
           <div className="h-[120px] overflow-hidden bg-gradient-to-br from-warm-beige to-warm-cream"><Img src={s.banner} alt={s.name} className="w-full h-full object-cover" /></div>
           <div className="p-4">
