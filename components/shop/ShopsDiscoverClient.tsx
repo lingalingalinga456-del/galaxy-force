@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Img } from '@/components/home/home-shared';
 import { SearchWithSuggestions } from '@/components/search/SearchWithSuggestions';
 import { SHOP_CATS, buildDemoShops, buildDemoProducts } from '@/lib/shops-data';
+import { SiteHeader, SiteFooter } from '@/components/layout/SiteChrome';
 
 type Shop = any;
 type Product = any;
@@ -48,7 +49,7 @@ export function ShopsDiscoverClient({ realShops = [] as Shop[], realProducts = [
 
   return (
     <div className="min-h-screen bg-warm-cream">
-      <Header />
+      <SiteHeader />
       <section className="py-12 md:py-16 bg-gradient-to-b from-warm-cream to-warm-beige">
         <div className="container mx-auto px-4 text-center">
           <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white text-warm-muted text-sm mb-4 shadow-card"><Store className="w-4 h-4 text-warm-red" /> Local Shops & Products</span>
@@ -86,7 +87,7 @@ export function ShopsDiscoverClient({ realShops = [] as Shop[], realProducts = [
         </div>
       </div>
 
-      <Footer />
+      <SiteFooter />
     </div>
   );
 }
@@ -172,36 +173,4 @@ function ProductCard({ p, idx = 0 }: { p: Product; idx?: number }) {
 }
 
 // ---- Header / Footer ----
-function Header() {
-  return (
-    <header className="sticky top-0 z-40 border-b border-warm-border bg-white/90 backdrop-blur-sm">
-      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="w-9 h-9 rounded-lg bg-warm-red flex items-center justify-center"><Store className="w-5 h-5 text-white" /></div>
-          <span className="text-heading font-bold text-lg">Galaxy Workforce</span>
-        </Link>
-        <nav className="hidden md:flex items-center gap-6 text-sm">
-          <Link href="/discover" className="hover:text-warm-red">Discover</Link>
-          <Link href="/jobs" className="hover:text-warm-red">Find Work</Link>
-          <Link href="/shops" className="text-warm-red font-medium">Shops</Link>
-          <Link href="/pricing" className="hover:text-warm-red">Pricing</Link>
-        </nav>
-        <Link href="/register"><Button size="sm">Get Started</Button></Link>
-      </div>
-    </header>
-  );
-}
-
-function Footer() {
-  return (
-    <footer className="bg-warm-ink text-white py-12">
-      <div className="container mx-auto px-4 grid md:grid-cols-4 gap-8">
-        <div><h3 className="font-semibold mb-4">Galaxy Workforce</h3><p className="text-sm text-white/70">Local shops and trusted workers in one marketplace.</p></div>
-        <div><h3 className="font-semibold mb-4">Marketplace</h3><ul className="space-y-2 text-sm text-white/70"><li><Link href="/discover" className="hover:text-white">Discover</Link></li><li><Link href="/jobs" className="hover:text-white">Find Work</Link></li><li><Link href="/shops" className="hover:text-white">Shops</Link></li></ul></div>
-        <div><h3 className="font-semibold mb-4">Partners</h3><ul className="space-y-2 text-sm text-white/70"><li><a href="https://lead-scrape-pro-2.vibepreview.com" target="_blank" rel="noopener noreferrer" className="hover:text-white">LeadScrape Pro</a></li></ul></div>
-        <div><h3 className="font-semibold mb-4">Legal</h3><ul className="space-y-2 text-sm text-white/70"><li><Link href="/legal/terms" className="hover:text-white">Terms</Link></li><li><Link href="/legal/privacy" className="hover:text-white">Privacy</Link></li></ul></div>
-      </div>
-      <div className="container mx-auto px-4 mt-8 pt-8 border-t border-white/10 text-center text-sm text-white/50">© 2026 Galaxy Workforce</div>
-    </footer>
-  );
-}
+// Header/Footer come from shared SiteHeader/SiteFooter
