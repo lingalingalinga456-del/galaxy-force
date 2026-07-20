@@ -1,7 +1,7 @@
 // components/design-system/components/FloatingAIAssistant.tsx
 'use client';
 import { useState } from 'react';
-import { X, MessageSquare, Sparkles, Send } from 'lucide-react';
+import { X, Sparkles, Send } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

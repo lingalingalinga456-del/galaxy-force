@@ -1,10 +1,5 @@
 // components/design-system/components/TrustScoreRing.tsx
-import { Arc } from 'react-arc-progress';
-import { useSpring, animated } from '@react-spring/web';
-
-export const TrustScoreRing = ({ score }) => {
-  const style = useSpring({ to: { strokeDashoffset: 251 - (score * 2.51) }, config: { mass: 1, tension: 170, friction: 26 } });
-  
+export const TrustScoreRing = ({ score }: { score: number }) => {
   return (
     <div className="relative w-12 h-12">
       <svg viewBox="0 0 80 80" className="w-12 h-12">
@@ -21,7 +16,6 @@ export const TrustScoreRing = ({ score }) => {
           strokeWidth="4" 
           fill="none" 
           strokeLinecap="round"
-          style={style}
         />
         <text 
           x="50%" 

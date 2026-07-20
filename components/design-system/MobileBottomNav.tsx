@@ -1,11 +1,10 @@
 // components/design-system/components/MobileBottomNav.tsx
-import { Link } from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-import { useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { cn } from '@/lib/utils';
 
 export const MobileBottomNav = () => {
-  const router = useRouter();
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
   
@@ -15,6 +14,7 @@ export const MobileBottomNav = () => {
       setCollapsed(!isMobile);
     };
     
+    handleResize();
     window.addEventListener('resize', handleResize);
     return () => {
       window.removeEventListener('resize', handleResize);
@@ -30,9 +30,10 @@ export const MobileBottomNav = () => {
   ];
 
   return (
-    <div className={`fixed bottom-0 left-0 right-0 flex flex-col items-center gap-2 pledge:bg-warm-cream rounded-t-lg shadow-lg p-2 transition-all duration-200 transform shadow-md backdrop-blur-sm ${collapsed ? 'hidden lg:flex' : ''} ${
-      pathname === '/' && 'border-b border-warm-border px-4'
-    } bg-warm-cream z-30`>
+    <div className={cn(
+      'fixed bottom-0 left-0 right-0 flex flex-col items-center gap-2 bg-warm-cream rounded-t-lg shadow-lg p-2 transition-all duration-200 transform shadow-md backdrop-blur-sm border-t border-warm-border mx-auto',
+      collapsed && 'hidden lg:flex'
+    )}>
       {links.map(link => {
         const active = pathname === link.href;
         return (
@@ -41,15 +42,12 @@ export const MobileBottomNav = () => {
             href={link.href} 
             className={cn(
               'px-3 py-2 rounded-lg text-sm transition-all', 
-              active ? 'bg-warm-red text-white' : 'text-warm-gray'
+              active ? 'bg-warm-red text-white' : 'text-warm-muted'
             )}
           >
-            <span className="w-5 h-5 flex items-center justify-center">
-              <span className="text-sm bg-transparent">{link.icon}</span>
-            </span>
             {link.label}
           </Link>
-        </Link>
+        );
       })}
     </div>
   );
