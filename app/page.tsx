@@ -39,6 +39,8 @@ export default async function Home() {
   let featuredWorkers: any[] = [];
   let stats: any = undefined;
   let activity: any[] = [];
+  let shops: any[] = [];
+  let products: any[] = [];
 
   try {
     const { data: cats } = await supabase
@@ -84,6 +86,33 @@ export default async function Home() {
       avgRating: 4.9,
     };
 
+    const { data: shopRows } = await supabase
+      .from('shop_profiles')
+      .select('id, shop_name, business_type, city, trust_score, verification_status')
+      .eq('verification_status', 'verified')
+      .limit(6);
+    shops = (shopRows || []).map((s: any) => ({
+      id: s.id,
+      name: s.shop_name,
+      category: s.business_type || 'Shop',
+      location: s.city || 'Bangladesh',
+      score: Number(s.trust_score || 0) > 5 ? (Number(s.trust_score || 0) / 20).toFixed(1) : '4.8',
+      products: 20,
+    }));
+
+    const { data: prodRows } = await supabase
+      .from('products')
+      .select('id, name, price, status, shop_profiles(shop_name)')
+      .eq('status', 'published')
+      .limit(10);
+    products = (prodRows || []).map((p: any) => ({
+      id: p.id,
+      name: p.name,
+      shop: p.shop_profiles?.shop_name || 'Shop',
+      price: Number(p.price || 0),
+      stock: 'In stock',
+    }));
+
     activity = FALLBACK_ACTIVITY;
   } catch (e) {
     console.error('Home fetch error:', e);
@@ -91,5 +120,5 @@ export default async function Home() {
 
   if (!categories.length) categories = fallbackCategories;
 
-  return <HomeContent categories={categories} stats={stats} featuredWorkers={featuredWorkers} activity={activity} />;
+  return <HomeContent categories={categories} stats={stats} featuredWorkers={featuredWorkers} activity={activity} shops={shops} products={products} />;
 }
