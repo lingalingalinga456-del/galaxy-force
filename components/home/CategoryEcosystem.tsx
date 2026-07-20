@@ -34,8 +34,8 @@ export function CategoryEcosystem({ categories }: { categories: any[] }) {
         <h3 className="text-sm font-semibold text-warm-muted uppercase tracking-wide mb-3">Local Shops & Services</h3>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {otherCats.map((cat, idx) => <CategoryCard key={cat.slug} cat={cat} idx={idx} />)}
-          <Link href="/discover?tab=shops" className="flex items-center justify-center rounded-[24px] border-2 border-dashed border-warm-border text-warm-red font-medium hover:bg-warm-beige transition-all">
-            Browse All Shops →
+          <Link href="/discover" className="flex items-center justify-center rounded-[24px] border-2 border-dashed border-warm-border text-warm-red font-medium hover:bg-warm-beige transition-all">
+            Browse All Categories →
           </Link>
         </div>
       </div>

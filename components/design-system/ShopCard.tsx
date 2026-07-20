@@ -12,7 +12,7 @@ export function ShopCard(props: ShopCardProps) {
   return (
     <div className="bg-white border border-[#E9E2D9] rounded-3xl overflow-hidden shadow-card hover:shadow-card-hover transition-all">
       {props.coverImage ? (
-        <img src={props.coverImage} alt={props.name} className="h-40 w-full object-cover" loading="lazy" referrerPolicy="no-referrer" />
+        <img src={props.coverImage} alt={props.name} className="h-40 w-full object-cover" loading="lazy" referrerPolicy="no-referrer" onError={(e) => { const el = e.currentTarget; if (!el.dataset.fb) { el.dataset.fb = '1'; el.src = `https://picsum.photos/seed/${encodeURIComponent(props.name)}/400/200`; } }} />
       ) : (
         <div className="h-40 w-full bg-[#F3ECE2] flex items-center justify-center text-3xl">🏪</div>
       )}

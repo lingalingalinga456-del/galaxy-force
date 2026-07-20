@@ -48,20 +48,23 @@ export function LocalShopsSection({ shops, products }: { shops?: any[]; products
     <section className="py-20">
       <div className="container mx-auto px-4">
         <SectionTitle kicker="Local businesses" title="Explore Shops & Products" sub="Trusted shop owners with the materials and tools you need." />
-        <div className="grid lg:grid-cols-[1fr_1.1fr] gap-10 items-start">
-          <div>
-            <h3 className="text-lg font-semibold text-warm-ink mb-4 flex items-center gap-2"><Store className="w-5 h-5 text-warm-red" /> Featured Shops</h3>
-            <div className="grid sm:grid-cols-2 gap-4">
-              {shopList.slice(0, 6).map((s, i) => <ShopCardMini key={s.id} s={s} idx={i} />)}
-            </div>
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold text-warm-ink mb-4 flex items-center gap-2"><ShoppingBag className="w-5 h-5 text-warm-red" /> Popular Products</h3>
-            <div className="flex gap-4 overflow-x-auto pb-4">
-              {productList.slice(0, 8).map((p) => <ProductCardMini key={p.id} p={p} />)}
-            </div>
+
+        {/* Shops — full width, responsive grid */}
+        <div className="mb-12">
+          <h3 className="text-lg font-semibold text-warm-ink mb-4 flex items-center gap-2"><Store className="w-5 h-5 text-warm-red" /> Featured Shops</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {shopList.slice(0, 6).map((s, i) => <ShopCardMini key={s.id} s={s} idx={i} />)}
           </div>
         </div>
+
+        {/* Products — full width, responsive grid */}
+        <div>
+          <h3 className="text-lg font-semibold text-warm-ink mb-4 flex items-center gap-2"><ShoppingBag className="w-5 h-5 text-warm-red" /> Popular Products</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            {productList.slice(0, 10).map((p) => <ProductCardMini key={p.id} p={p} />)}
+          </div>
+        </div>
+
         <div className="text-center mt-8"><Link href="/discover?tab=shops"><Button size="lg" className="gap-2">Browse All Shops & Products <ArrowRight className="w-4 h-4" /></Button></Link></div>
       </div>
     </section>

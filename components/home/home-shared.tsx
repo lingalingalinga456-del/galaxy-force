@@ -34,8 +34,29 @@ export function reveal(delay = 0) {
   };
 }
 
+function fallbackFor(alt: string) {
+  const seed = encodeURIComponent((alt || 'galaxy').slice(0, 24));
+  return `https://picsum.photos/seed/${seed}/600/400`;
+}
+
 export function Img({ src, alt, className, style }: { src: string; alt: string; className?: string; style?: React.CSSProperties }) {
-  return <img src={src} alt={alt} className={className} style={style} loading="lazy" decoding="async" referrerPolicy="no-referrer" />;
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className={className}
+      style={style}
+      loading="lazy"
+      decoding="async"
+      referrerPolicy="no-referrer"
+      onError={(e) => {
+        const el = e.currentTarget;
+        if (el.dataset.fb) return;
+        el.dataset.fb = '1';
+        el.src = fallbackFor(alt);
+      }}
+    />
+  );
 }
 
 export function CountUp({ value, suffix = '', decimals = 0 }: { value: number; suffix?: string; decimals?: number }) {

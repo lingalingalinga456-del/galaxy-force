@@ -21,7 +21,7 @@ export function WorkerCard(props: WorkerCardProps) {
       <div className="flex items-center gap-4">
         <div className="relative">
           {props.avatar ? (
-            <img src={props.avatar} alt={props.name} className="w-16 h-16 rounded-full object-cover ring-2 ring-white" loading="lazy" referrerPolicy="no-referrer" />
+            <img src={props.avatar} alt={props.name} className="w-16 h-16 rounded-full object-cover ring-2 ring-white" loading="lazy" referrerPolicy="no-referrer" onError={(e) => { const el = e.currentTarget; if (!el.dataset.fb) { el.dataset.fb = '1'; el.src = `https://picsum.photos/seed/${encodeURIComponent(props.name)}/200/200`; } }} />
           ) : (
             <div className="w-16 h-16 rounded-full bg-[#D94F4F]/10 flex items-center justify-center text-2xl font-bold text-[#D94F4F] ring-2 ring-white">{props.name.charAt(0)}</div>
           )}
