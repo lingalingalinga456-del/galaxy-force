@@ -134,18 +134,15 @@ export function DiscoverClient({ categories, realWorkers, realTeams, realShops, 
         onPickSituation={(slug: string) => sync({ situation: slug, category: '' })}
       />
 
-      {/* Body */}
+{/* Body */}
       <section className="py-10">
-        <div className="container mx-auto px-4 grid lg:grid-cols-[260px_1fr] gap-8">
-          {/* Sidebar */}
-          <aside className="hidden lg:block">
+        <div className="container mx-auto px-4">
+          <div className="hidden lg:block lg:w-[310px] lg:sticky lg:top-[64px]">
             <Sidebar sort={sort} trust={trust} dist={dist} minPrice={minPrice} maxPrice={maxPrice} avail={avail} verifiedOnly={verifiedOnly}
               onSort={(v: string) => sync({ sort: v })} onTrust={(v: string) => sync({ trust: String(v) })} onDist={(v: string) => sync({ dist: String(v) })}
               onMin={(v: number) => sync({ min_price: String(v) })} onMax={(v: number) => sync({ max_price: String(v) })} onAvail={setAvail} onVerified={() => setVerifiedOnly((p) => !p)} onClear={clearAll} />
-          </aside>
-
-          {/* Results */}
-          <div>
+          </div>
+          <div className="mt-6 lg:mt-0 lg:ml-8">
             <div className="flex items-center justify-between mb-4">
               <p className="text-sm text-warm-muted">{totalResults} results{showFallback ? ' + external leads' : ''}</p>
               <button onClick={() => setMobileFilters(true)} className="lg:hidden inline-flex items-center gap-2 rounded-full border border-warm-border px-4 py-2 text-sm"><SlidersHorizontal className="w-4 h-4" /> Filters</button>

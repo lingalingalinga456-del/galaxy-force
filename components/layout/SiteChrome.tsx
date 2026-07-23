@@ -18,7 +18,7 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
   return (
     <header className="sticky top-0 z-50 border-b border-warm-border bg-white/85 backdrop-blur-sm">
-      <div className="mx-auto max-w-[1280px] px-4 md:px-6 xl:px-10 py-3 flex items-center justify-between gap-4">
+      <div className="container page-px py-3 flex items-center justify-between gap-4">
         <Link href="/" className="flex items-center gap-2 shrink-0">
           <div className="w-9 h-9 rounded-lg bg-warm-red flex items-center justify-center">
             <Sparkles className="w-5 h-5 text-white" />
@@ -51,7 +51,7 @@ export function SiteHeader() {
             onClick={() => setOpen((v) => !v)}
             aria-label="Toggle menu"
             aria-expanded={open}
-            className="hidden md:inline-flex xl:hidden items-center justify-center w-10 h-10 rounded-lg border border-warm-border text-warm-ink"
+            className="hidden xl:flex md:inline-flex items-center justify-center w-10 h-10 rounded-lg border border-warm-border text-warm-ink"
           >
             {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -60,7 +60,7 @@ export function SiteHeader() {
 
       {open && (
         <div className="xl:hidden border-t border-warm-border bg-white">
-          <nav className="mx-auto max-w-[1280px] px-4 md:px-6 xl:px-10 py-3 flex flex-col gap-1">
+          <nav className="container page-px py-3 flex flex-col gap-1">
             {NAV.map((n) => (
               <Link
                 key={n.href}
@@ -87,7 +87,7 @@ export function SiteHeader() {
 export function SiteFooter() {
   return (
     <footer className="bg-warm-ink text-white py-12">
-      <div className="mx-auto max-w-[1280px] px-4 md:px-6 xl:px-10 grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="container page-px grid grid-cols-1 md:grid-cols-4 gap-8">
         <div>
           <div className="flex items-center gap-2 mb-4">
             <div className="w-8 h-8 rounded-lg bg-warm-red flex items-center justify-center">
@@ -137,7 +137,7 @@ export function SiteFooter() {
           </ul>
         </div>
       </div>
-      <div className="mx-auto max-w-[1280px] px-4 md:px-6 xl:px-10 mt-8 pt-8 border-t border-white/10 text-center text-sm text-white/50">
+      <div className="container page-px mt-8 pt-8 border-t border-white/10 text-center text-sm text-white/50">
         © 2026 Galaxy Workforce. All rights reserved.
       </div>
     </footer>

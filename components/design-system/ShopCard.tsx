@@ -1,36 +1,54 @@
-﻿interface ShopCardProps {
+﻿'use client';
+
+import Link from 'next/link';
+
+interface ShopCardProps {
   id: string;
   name: string;
-  coverImage?: string;
+  location: string;
   rating: number;
   reviewCount: number;
-  location: string;
   deliveryTime: string;
+  coverImage: string;
 }
 
-export function ShopCard(props: ShopCardProps) {
+export function ShopCard({
+  id,
+  name,
+  location,
+  rating,
+  reviewCount,
+  deliveryTime,
+  coverImage,
+}: ShopCardProps) {
   return (
-    <div className="w-full bg-white border border-[#E9E2D9] rounded-3xl overflow-hidden shadow-card hover:shadow-card-hover transition-all">
-      {props.coverImage ? (
-        <img src={props.coverImage} alt={props.name} className="h-40 w-full object-cover" loading="lazy" referrerPolicy="no-referrer" onError={(e) => { const el = e.currentTarget; if (!el.dataset.fb) { el.dataset.fb = '1'; el.src = `https://picsum.photos/seed/${encodeURIComponent(props.name)}/400/200`; } }} />
-      ) : (
-        <div className="h-40 w-full bg-[#F3ECE2] flex items-center justify-center text-3xl">🏪</div>
-      )}
+    <div className="bg-white border border-warm-border rounded-3xl overflow-hidden shadow-card hover:shadow-card-hover transition-all w-full">
+      <img
+        src={coverImage}
+        alt={name}
+        className="h-36 w-full object-cover"
+        loading="lazy"
+      />
+      
       <div className="p-5">
-        <div className="flex justify-between items-start">
-          <div>
-            <h3 className="font-semibold text-lg">{props.name}</h3>
-            <p className="text-sm text-[#6B6B6B]">{props.location}</p>
+        <div className="flex justify-between gap-4">
+          <div className="min-w-0">
+            <h3 className="font-semibold text-lg truncate text-warm-ink">{name}</h3>
+            <p className="text-sm text-warm-muted">{location}</p>
           </div>
           <div className="text-right">
-            <div className="flex items-center gap-1 text-sm"><span>⭐</span> {props.rating}</div>
-            <p className="text-xs text-[#6B6B6B]">{props.reviewCount} reviews</p>
+            <div className="flex items-center gap-1 text-sm text-warm-muted justify-end">⭐ {rating}</div>
+            <p className="text-xs text-warm-muted">{reviewCount} reviews</p>
           </div>
         </div>
-        <div className="mt-3 text-sm text-[#5FA777]">🚚 {props.deliveryTime} delivery</div>
-        <button onClick={() => (window.location.href = `/shop/${props.id}`)} className="mt-4 w-full min-h-[48px] border border-[#D94F4F] text-[#D94F4F] hover:bg-[#D94F4F] hover:text-white py-2 rounded-2xl font-semibold transition-colors">
-          Browse Store
-        </button>
+
+        <p className="text-sm text-warm-muted mt-2">🚚 {deliveryTime} delivery</p>
+
+        <Link href={`/shop/${id}`}>
+          <button className="mt-4 w-full border border-warm-red text-warm-red hover:bg-warm-red hover:text-white py-2 rounded-2xl text-sm touch-target transition-colors">
+            Browse Store
+          </button>
+        </Link>
       </div>
     </div>
   );

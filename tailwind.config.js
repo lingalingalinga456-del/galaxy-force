@@ -9,8 +9,14 @@ module.exports = {
     extend: {
       container: {
         center: true,
-        padding: { DEFAULT: '1rem', md: '1.5rem', xl: '2.5rem' },
-        screens: { '2xl': '1280px' },
+        padding: { DEFAULT: '1rem', sm: '1.5rem', md: '2rem', lg: '2.5rem', xl: '3rem' },
+        screens: {
+          'sm': '640px',
+          'md': '768px',
+          'lg': '1024px',
+          'xl': '1280px',
+          '2xl': '1440px',
+        },
       },
       colors: {
         warm: {
@@ -61,6 +67,8 @@ module.exports = {
       spacing: {
         18: '4.5rem',
         22: '5.5rem',
+        20: '5rem',
+        24: '6rem',
       },
       keyframes: {
         'accordion-down': { from: { height: '0' }, to: { height: 'var(--radix-accordion-content-height)' } },

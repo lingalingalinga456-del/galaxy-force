@@ -61,22 +61,21 @@ export default async function ClientDashboard() {
         <div>
           <SectionTitle>AI Recommended for You</SectionTitle>
           <div className="flex flex-wrap gap-6">
-            {talent?.map((t: any) => (
-              <WorkerCard
-                key={t.id}
-                worker={{
-                  id: t.id,
-                  username: t.profiles?.username,
-                  name: t.profiles?.full_name || 'Worker',
-                  primaryOccupation: t.primary_occupation || t.headline,
-                  hourlyRate: Number(t.hourly_rate || 0),
-                  trustScore: Number(t.completion_score || 0),
-                  completedJobs: Number(t.completion_score || 0),
-                  verified: !!t.profiles?.is_verified,
-                  status: 'active',
-                }}
-              />
-            ))}
+{talent?.map((t: any) => (
+               <WorkerCard
+                 key={t.id}
+                 id={t.id}
+                 name={t.profiles?.full_name || 'Worker'}
+                 role={t.primary_occupation || t.headline}
+                 location="Bangladesh"
+                 distance="5km"
+                 hourlyRate={Number(t.hourly_rate || 0)}
+                 trustScore={Number(t.completion_score || 0) >= 5 ? (Number(t.completion_score || 0) / 20) : 4.8}
+                 completedJobs={Math.round(Number(t.completion_score || 0) * 10)}
+                 availability={t.profiles?.status === 'online' ? 'available' : 'busy'}
+                 avatar={t.profiles?.avatar_url || '/placeholder-avatar.png'}
+               />
+             ))}
             {!talent?.length && <p className="text-sm text-warm-muted">No recommendations yet.</p>}
           </div>
         </div>

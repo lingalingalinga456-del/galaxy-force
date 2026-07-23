@@ -1,78 +1,88 @@
+'use client';
+
 import Link from 'next/link';
-import { TrustScoreRing } from './TrustScoreRing';
-import { WorkerStatusPill } from './WorkerStatusPill';
-import { TrustBadge } from './TrustBadge';
+import { Star } from 'lucide-react';
 
-export type WorkerCardData = {
-  username?: string;
-  id?: string;
+interface WorkerCardProps {
+  id: string;
+  avatar: string;
   name: string;
-  headline?: string;
-  primaryOccupation?: string;
-  location?: string;
-  hourlyRate?: number;
-  completedJobs?: number;
-  trustScore?: number;
-  verified?: boolean;
-  status?: 'active' | 'unverified' | 'busy' | 'offline';
-  skills?: string[];
-  imageUrl?: string;
-};
+  role: string;
+  location: string;
+  distance: string;
+  hourlyRate: number;
+  completedJobs: number;
+  trustScore: number;
+  availability: 'available' | 'busy' | 'emergency' | string;
+}
 
-export function WorkerCard({ worker }: { worker: WorkerCardData }) {
-  const href = `/talent/${worker.username || worker.id}`;
+export function WorkerCard({
+  id,
+  avatar,
+  name,
+  role,
+  location,
+  distance,
+  hourlyRate,
+  completedJobs,
+  trustScore,
+  availability,
+}: WorkerCardProps) {
+  const isAvailable = availability === 'available';
+  const isEmergency = availability === 'emergency';
+
   return (
-    <Link href={href} className="group block">
-      <div className="w-full sm:w-80 h-[380px] rounded-[32px] bg-white border border-warm-border shadow-card hover:shadow-card-lift transition-all duration-200 hover:scale-[1.015] flex flex-col overflow-hidden">
-        {/* Top image */}
-        <div className="relative h-[150px] bg-gradient-to-br from-warm-beige to-warm-cream flex items-center justify-center overflow-hidden">
-          {worker.imageUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={worker.imageUrl} alt={worker.name} className="w-full h-full object-cover" />
-          ) : (
-            <div className="w-20 h-20 rounded-full bg-warm-red/10 flex items-center justify-center text-3xl font-bold text-warm-red">
-              {worker.name.charAt(0)}
-            </div>
-          )}
-          <div className="absolute top-3 right-3">
-            <TrustScoreRing score={worker.trustScore ?? 0} />
-          </div>
+    <div className="bg-white border border-warm-border rounded-3xl p-5 shadow-card hover:shadow-card-hover transition-all duration-200 hover:-translate-y-1 w-full">
+      <div className="flex flex-col sm:flex-row gap-4">
+        <div className="relative flex-shrink-0">
+          <img
+            src={avatar}
+            alt={name}
+            className="w-16 h-16 rounded-full object-cover ring-2 ring-white"
+            loading="lazy"
+          />
+          <div
+            className={`absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 border-white ${
+              isAvailable
+                ? 'bg-warm-green'
+                : isEmergency
+                ? 'bg-warm-red'
+                : 'bg-warm-gold'
+            }`}
+          />
         </div>
 
-        {/* Content */}
-        <div className="p-5 flex flex-col flex-1">
-          <div className="flex items-start justify-between gap-2">
+        <div className="flex-1 min-w-0">
+          <div className="flex justify-between items-start gap-2">
+            <div className="min-w-0">
+              <h3 className="font-semibold text-lg truncate text-warm-ink">{name}</h3>
+              <p className="text-sm text-warm-muted">{role}</p>
+            </div>
+            <div className="bg-warm-beige border border-warm-gold text-xs font-semibold px-3 py-1 rounded-full flex items-center gap-1 whitespace-nowrap">
+              <Star className="w-3 h-3 text-warm-gold fill-warm-gold" />
+              {trustScore}
+            </div>
+          </div>
+
+          <p className="text-sm text-warm-muted mt-1">
+            {location} • {distance}
+          </p>
+
+          <div className="flex items-center justify-between mt-3">
             <div>
-              <div className="flex items-center gap-1.5">
-                <h3 className="font-semibold text-warm-ink text-lg leading-tight">{worker.name}</h3>
-                {worker.verified && <TrustBadge label="Verified" variant="verified" />}
-              </div>
-              <p className="text-sm text-warm-muted mt-0.5">{worker.primaryOccupation || worker.headline}</p>
+              <span className="text-xl font-semibold text-warm-ink">৳{hourlyRate}</span>
+              <span className="text-sm text-warm-muted">/hr</span>
             </div>
-          </div>
-
-          <div className="flex flex-wrap gap-1.5 mt-3">
-            {(worker.skills || []).slice(0, 3).map((s) => (
-              <span key={s} className="px-2 py-0.5 rounded-full bg-warm-beige text-xs text-warm-muted">
-                {s}
-              </span>
-            ))}
-          </div>
-
-          <div className="mt-auto space-y-3">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-warm-muted">{worker.location || 'Bangladesh'}</span>
-              <span className="font-semibold text-warm-red">
-                {worker.hourlyRate ? `৳${worker.hourlyRate}/hr` : '—'}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-warm-muted">{worker.completedJobs || 0} jobs done</span>
-              <WorkerStatusPill status={worker.status || 'active'} />
-            </div>
+            <span className="text-sm text-warm-muted">{completedJobs} jobs</span>
           </div>
         </div>
       </div>
-    </Link>
+
+      <Link href={`/talent/${id}`}>
+        <button className="mt-4 w-full bg-warm-red hover:bg-warm-red-hover text-white py-2.5 rounded-2xl font-semibold transition-colors text-sm touch-target">
+          View Profile
+        </button>
+      </Link>
+    </div>
   );
 }

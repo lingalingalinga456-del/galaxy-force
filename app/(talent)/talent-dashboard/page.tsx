@@ -60,9 +60,20 @@ export default async function TalentDashboard() {
         <div>
           <SectionTitle action={<Link href="/jobs" className="text-sm text-warm-red hover:underline">View all</Link>}>Recommended Jobs</SectionTitle>
           <div className="space-y-4">
-            {jobs?.map((job: any) => (
-              <JobCard key={job.id} job={{ id: job.id, title: job.title, budgetType: job.budget_type, budget: Number(job.budget_max || 0), postedAt: new Date(job.created_at).toLocaleDateString() }} />
-            ))}
+{jobs?.map((job: any) => (
+               <JobCard
+                 key={job.id}
+                 id={job.id}
+                 title={job.title}
+                 clientName="Client"
+                 location="Bangladesh"
+                 distance="5km"
+                 budget={job.budget_type === 'fixed' ? Number(job.budget_max || 0) : Number(job.budget_max || 0) * 8}
+                 type={job.budget_type}
+                 proposals={0}
+                 matchScore={Math.round(80 + (Number(job.budget_max || 0)) % 18)}
+               />
+             ))}
             {!jobs?.length && <p className="text-sm text-warm-muted">No open jobs right now.</p>}
           </div>
         </div>
