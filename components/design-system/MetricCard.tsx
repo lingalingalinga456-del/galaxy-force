@@ -1,28 +1,22 @@
+'use client';
+
 import { cn } from '@/lib/utils';
 
-type MetricCardProps = {
-  label: string;
-  value: string | number;
-  icon?: React.ReactNode;
-  trend?: { value: string; positive?: boolean };
-  accent?: 'red' | 'gold' | 'green';
-};
+export function MetricCard({ label, value, icon, trend, accent = 'red' }: { label: string; value: string | number; icon?: React.ReactNode; trend?: { value: string; positive?: boolean }; accent?: 'red' | 'gold' | 'green' }) {
+  const accentClasses = {
+    red: 'border-warm-red bg-warm-red/5',
+    gold: 'border-warm-gold bg-warm-gold/5',
+    green: 'border-warm-green bg-warm-green/5'
+  };
 
-const accentMap = {
-  red: 'text-warm-red',
-  gold: 'text-warm-gold',
-  green: 'text-warm-green',
-};
-
-export function MetricCard({ label, value, icon, trend, accent = 'red' }: MetricCardProps) {
   return (
-    <div className="rounded-[24px] bg-white border border-warm-border shadow-card hover:shadow-card-hover transition-all duration-200 p-6">
+    <div className={`rounded-2xl bg-white border p-6 shadow-sm hover:shadow-md transition-all ${accentClasses[accent] || ''}`}>
       <div className="flex items-start justify-between">
         <div>
           <p className="text-sm text-warm-muted">{label}</p>
-          <p className="text-3xl font-bold text-warm-ink mt-1 tabular-nums">{value}</p>
+          <p className="text-2xl font-bold text-warm-ink">{value}</p>
         </div>
-        {icon && <div className={cn('w-10 h-10 rounded-full bg-warm-beige flex items-center justify-center', accentMap[accent])}>{icon}</div>}
+        {icon && <div className="w-9 h-9 rounded-full flex items-center justify-center bg-warm-beige">{icon}</div>}
       </div>
       {trend && (
         <div className="mt-2 flex items-center gap-1 text-xs">
