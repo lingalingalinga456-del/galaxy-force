@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-warm-red: #D94F4F;
+  --color-warm-red-hover: #C43A3A;
+  --color-warm-green: #5FA777;
+  --color-warm-beige: #F3ECE2;
+  --color-warm-gold: #D8B26E;
+  --color-warm-border: #E9E2D9;
+  --color-warm-ink: #1A1A1A;
+  --color-warm-muted: #6B6B6B;
+  --font-playfair: Georgia, 'Times New Roman', serif;
+  --font-inter: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+@layer components {
+  .text-heading { font-family: var(--font-playfair); font-weight: 600; }
+  .font-heading { font-family: var(--font-playfair); }
+  .font-body { font-family: var(--font-inter); }
+  .font-bengali { font-family: 'Noto Sans Bengali', var(--font-inter); }
+  .bg-warm-cream { background-color: #FAF7F2; }
+  .bg-warm-beige { background-color: var(--color-warm-beige); }
+  .bg-warm-red { background-color: var(--color-warm-red); color: #fff; }
+  .bg-warm-red-hover { background-color: var(--color-warm-red-hover); }
+  .bg-warm-green { background-color: var(--color-warm-green); color: #fff; }
+  .bg-warm-gold { background-color: var(--color-warm-gold); color: #fff; }
+  .text-warm-ink { color: var(--color-warm-ink); }
+  .text-warm-muted { color: var(--color-warm-muted); }
+  .text-warm-red { color: var(--color-warm-red); }
+  .text-warm-red-hover { color: var(--color-warm-red-hover); }
+  .text-warm-green { color: var(--color-warm-green); }
+  .border-warm-border { border-color: var(--color-warm-border); }
+  .shadow-card { box-shadow: 0 2px 8px rgba(26,26,26,0.04), 0 1px 3px rgba(26,26,26,0.02); }
+  .shadow-card-hover { box-shadow: 0 8px 24px rgba(26,26,26,0.08), 0 4px 12px rgba(26,26,26,0.04); }
+}
